@@ -38,7 +38,7 @@ public class PrivateMsgServiceImpl implements PrivateMsgService {
 
     @Override
     public Page<PrivateMsgEntity> findHistoryMsg(PrivateMsgFilterBo privateMsgFilterBo) {
-        Sort sort = new Sort(Sort.Direction.DESC,"create_time");
+        Sort sort = new Sort(Sort.Direction.DESC,"createTime");
         PageRequest pageRequest = PageRequest.of(privateMsgFilterBo.getPageNo()-1,privateMsgFilterBo.getPageSize(),sort);
         org.springframework.data.domain.Page<PrivateMsgEntity> page = privateMsgRepo.findHistoryMsg(privateMsgFilterBo.getUserid(),privateMsgFilterBo.getReceiveUserid(),pageRequest);
         Page pageData = new Page();

@@ -1,6 +1,7 @@
 package com.katana.tenement.framework.websocket;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.websocket.OnClose;
@@ -14,12 +15,23 @@ import javax.websocket.server.ServerEndpoint;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.katana.tenement.dao.app.PrivateMsgRepo;
+import com.katana.tenement.dao.app.vo.userinfo.UserInfoVo;
+import com.katana.tenement.framework.dto.message.Message;
+import com.katana.tenement.framework.util.DateUtils;
+import com.katana.tenement.service.app.PrivateMsgService;
+import com.katana.tenement.service.app.UserInfoService;
+import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgBo;
+import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgFilterBo;
+import com.katana.tenement.service.app.bo.userinfo.UserInfoBo;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.socket.server.standard.SpringConfigurator;
 
-@ServerEndpoint("/im/{userId}")
+@ServerEndpoint(value = "/im/{userId}")
 @Component
 @Slf4j
 public class WebSocketServer {
@@ -34,6 +46,20 @@ public class WebSocketServer {
     private static ConcurrentHashMap<String, WebSocketServer> websocketList = new ConcurrentHashMap<>();
     //接收sid
     private String userId="";
+
+    private static PrivateMsgService privateMsgService;
+
+    private static UserInfoService userInfoService;
+
+    @Autowired
+    private void setPrivateMsgService(PrivateMsgService privateMsgService){
+        WebSocketServer.privateMsgService = privateMsgService;
+    }
+
+    @Autowired
+    private void setUserInfoService(UserInfoService userInfoService){
+        WebSocketServer.userInfoService = userInfoService;
+    }
     /**
      * 连接建立成功调用的方法*/
     @OnOpen
@@ -84,11 +110,29 @@ public class WebSocketServer {
                     //传送给对应用户的websocket
                     if(StringUtils.isNotBlank(toUserId)&&StringUtils.isNotBlank(contentText)){
                         WebSocketServer socketx=websocketList.get(toUserId);
+                        String createTime = DateUtils.getLocalDateTimeStr(LocalDateTime.now());
+                        int toUser = Integer.parseInt(toUserId);
+                        int user = Integer.parseInt(userId);
                         //需要进行转换，userId
                         if(socketx!=null){
-                            socketx.sendMessage(JSONObject.toJSONString(object));
+                            UserInfoVo userInfo = userInfoService.info(Integer.parseInt(userId));
+                            Message messageText = new Message();
+                            messageText.setAvatar(userInfo.getAvatar());
+                            messageText.setContent(contentText);
+                            messageText.setNickName(userInfo.getNickName());
+                            messageText.setCreateTime(createTime);
+                            messageText.setUserid(user);
+                            socketx.sendMessage(JSONObject.toJSONString(messageText));
                             //此处可以放置相关业务代码，例如存储到数据库
                         }
+                        PrivateMsgBo privateMsgBo = new PrivateMsgBo();
+                        privateMsgBo.setUpdateTime(LocalDateTime.now());
+                        privateMsgBo.setCreateTime(LocalDateTime.now());
+                        privateMsgBo.setContent(contentText);
+                        privateMsgBo.setReceiveUserid(toUser);
+                        privateMsgBo.setUserid(user);
+                        privateMsgBo.setIsRead(-1);
+                        privateMsgService.saveMsg(privateMsgBo);
                     }
                 }catch (Exception e){
                     e.printStackTrace();

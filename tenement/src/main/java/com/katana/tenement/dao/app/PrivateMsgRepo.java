@@ -10,6 +10,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 public interface PrivateMsgRepo extends CrudRepository<PrivateMsgEntity,Integer> , JpaSpecificationExecutor<PrivateMsgEntity> {
-    @Query("select t from PrivateMsgEntity where userid = :userId and receiveUserid = :receiveUserId")
+    @Query("select t from PrivateMsgEntity t where t.userid = :userId and t.receiveUserid = :receiveUserId")
     Page<PrivateMsgEntity> findHistoryMsg(@Param("userId") int userId, @Param("receiveUserId") int receiveUserId, Pageable pageable);
 }

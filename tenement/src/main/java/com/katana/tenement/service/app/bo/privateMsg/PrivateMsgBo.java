@@ -2,6 +2,8 @@ package com.katana.tenement.service.app.bo.privateMsg;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class PrivateMsgBo {
 
@@ -13,8 +15,10 @@ public class PrivateMsgBo {
     //接收方用户id
     private Integer receiveUserid;
 
-    private String createTime;
+    private int isRead;
 
-    private String updateTime;
+    private LocalDateTime createTime;
+
+    private LocalDateTime updateTime;
 
 }

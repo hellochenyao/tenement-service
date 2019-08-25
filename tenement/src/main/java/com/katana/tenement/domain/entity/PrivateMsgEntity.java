@@ -25,6 +25,8 @@ public class PrivateMsgEntity {
     //接收方用户id
     private Integer receiveUserid;
 
+    private int isRead;//-1未读 0已读
+
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
