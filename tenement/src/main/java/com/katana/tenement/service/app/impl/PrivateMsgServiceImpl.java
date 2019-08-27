@@ -1,7 +1,9 @@
 package com.katana.tenement.service.app.impl;
 
+import com.katana.tenement.dao.app.PrivateMsgDao;
 import com.katana.tenement.dao.app.PrivateMsgRepo;
 import com.katana.tenement.dao.app.UserRelationRepo;
+import com.katana.tenement.dao.app.vo.privateMsg.PrivateMsgFilterVo;
 import com.katana.tenement.domain.entity.PrivateMsgEntity;
 import com.katana.tenement.domain.entity.UserRelationEntity;
 import com.katana.tenement.framework.dto.page.Page;
@@ -25,6 +27,9 @@ public class PrivateMsgServiceImpl implements PrivateMsgService {
     @Autowired
     private UserRelationRepo userRelationRepo;
 
+    @Autowired
+    private PrivateMsgDao privateMsgDao;
+
     @Override
     public void saveMsg(PrivateMsgBo privateMsgBo) {
         UserRelationEntity userRelation = userRelationRepo.findByUseridAndFriendId(privateMsgBo.getUserid(),privateMsgBo.getReceiveUserid());
@@ -45,5 +50,13 @@ public class PrivateMsgServiceImpl implements PrivateMsgService {
         pageData.setData(page.getContent());
         pageData.setTotal(page.getContent().size());
         return pageData;
+    }
+
+    @Override
+    public Page<PrivateMsgEntity> findUserReceiveMsg(PrivateMsgFilterBo privateMsgFilterBo) {
+        PrivateMsgFilterVo privateVo = new PrivateMsgFilterVo();
+        BeanUtils.copyProperties(privateMsgFilterBo,privateVo);
+        Page<PrivateMsgEntity> page = privateMsgDao.findUserPrivateMsg(privateVo);
+        return page;
     }
 }

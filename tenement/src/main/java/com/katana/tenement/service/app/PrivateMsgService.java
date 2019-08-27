@@ -11,4 +11,6 @@ public interface PrivateMsgService {
 
     Page<PrivateMsgEntity> findHistoryMsg(PrivateMsgFilterBo privateMsgFilterBo);
 
+    Page<PrivateMsgEntity> findUserReceiveMsg(PrivateMsgFilterBo privateMsgFilterBo);
+
 }
