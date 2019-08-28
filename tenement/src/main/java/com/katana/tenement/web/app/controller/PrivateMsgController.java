@@ -2,6 +2,8 @@ package com.katana.tenement.web.app.controller;
 
 import com.katana.tenement.dao.app.vo.privateMsg.PrivateMsgUserReceiveFilterVo;
 import com.katana.tenement.dao.app.vo.userinfo.UserInfoVo;
+import com.katana.tenement.domain.emuns.MessageTypeEnum;
+import com.katana.tenement.domain.emuns.RentTypeEnum;
 import com.katana.tenement.domain.entity.PrivateMsgEntity;
 import com.katana.tenement.framework.dto.page.Page;
 import com.katana.tenement.framework.util.DateUtils;
@@ -49,9 +51,10 @@ public class PrivateMsgController {
         page.getData().forEach(e->{
             ResponsePrivateMsgGet.Message message = new ResponsePrivateMsgGet.Message();
             BeanUtils.copyProperties(e,message);
-            UserInfoVo userInfo = userInfoService.info(userId);
-            UserInfoVo toUserInfo = userInfoService.info(requestPrivateMsgFilterGet.getReceiveUserid());
+            UserInfoVo userInfo = userInfoService.info(e.getUserid());
+            UserInfoVo toUserInfo = userInfoService.info(e.getReceiveUserid());
             message.setReceiveUserNickName(toUserInfo.getNickName());
+            message.setType(MessageTypeEnum.getEnumType(e.getType()).getValue());
             message.setReceiveUserAvatar(toUserInfo.getAvatar());
             message.setUserAvatar(userInfo.getAvatar());
             message.setUserNickName(userInfo.getNickName());
@@ -59,7 +62,7 @@ public class PrivateMsgController {
             messages.add(message);
         });
         responsePrivateMsgGet.setMessages(messages);
-        responsePrivateMsgGet.setTotal(messages.size());
+        responsePrivateMsgGet.setTotal(page.getTotal());
         return responsePrivateMsgGet;
 
     }
@@ -85,6 +88,7 @@ public class PrivateMsgController {
                 noReadNums = privateMsgService.findNoReadNums(e.getUserid(),userId,-1);
             }
             UserInfoVo fromUserInfo = userInfoService.info(fromUserId);
+            message.setType(MessageTypeEnum.getEnumType(e.getType()).getValue());
             message.setFromUserAvatar(fromUserInfo.getAvatar());
             message.setFromUserid(fromUserId);
             message.setFromUserNickName(fromUserInfo.getNickName());
@@ -93,7 +97,7 @@ public class PrivateMsgController {
             messages.add(message);
         });
         response.setMessages(messages);
-        response.setTotal(messages.size());
+        response.setTotal(page.getTotal());
         return response;
 
     }

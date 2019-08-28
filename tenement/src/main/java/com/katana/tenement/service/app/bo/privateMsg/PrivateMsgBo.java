@@ -17,6 +17,8 @@ public class PrivateMsgBo {
 
     private int isRead;
 
+    private int type;
+
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;

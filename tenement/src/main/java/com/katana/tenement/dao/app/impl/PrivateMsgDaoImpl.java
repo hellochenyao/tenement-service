@@ -21,7 +21,7 @@ public class PrivateMsgDaoImpl implements PrivateMsgDao {
     @Override
     public Page<PrivateMsgEntity> findConnectMsg(PrivateMsgUserReceiveFilterVo privateFilter) {
         StringBuilder sql = new StringBuilder();
-        sql.append("select * from private_msg WHERE 1=1");
+        sql.append("select SQL_CALC_FOUND_ROWS * from private_msg WHERE 1=1");
         List<Object> param = new ArrayList<>();
         if(privateFilter.getUserid()!=null&&!StringUtils.isEmpty(privateFilter.getUserid())){
             sql.append(" and userid = ? ");
@@ -39,9 +39,11 @@ public class PrivateMsgDaoImpl implements PrivateMsgDao {
         }
         RowMapper<PrivateMsgEntity> rowMapper = new BeanPropertyRowMapper<>(PrivateMsgEntity.class);
         List<PrivateMsgEntity> list = jdbcTemplate.query(sql.toString(),param.toArray(),rowMapper);
+        final String totalSql = "SELECT FOUND_ROWS();";
+        Integer total = jdbcTemplate.queryForObject(totalSql, Integer.class);
         Page<PrivateMsgEntity> page = new Page();
         page.setData(list);
-        page.setTotal(list.size());
+        page.setTotal(total);
         return page;
     }
 }

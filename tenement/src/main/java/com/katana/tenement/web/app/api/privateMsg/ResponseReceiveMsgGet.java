@@ -25,5 +25,7 @@ public class ResponseReceiveMsgGet {
         private int isRead;//-1未读 0已读
 
         private String createTime;
+
+        private String type;
     }
 }

@@ -46,9 +46,10 @@ public class PrivateMsgServiceImpl implements PrivateMsgService {
         Sort sort = new Sort(Sort.Direction.DESC,"createTime");
         PageRequest pageRequest = PageRequest.of(privateMsgFilterBo.getPageNo()-1,privateMsgFilterBo.getPageSize(),sort);
         org.springframework.data.domain.Page<PrivateMsgEntity> page = privateMsgRepo.findHistoryMsg(privateMsgFilterBo.getUserid(),privateMsgFilterBo.getReceiveUserid(),pageRequest);
+        Integer total = privateMsgRepo.findHistoryNums(privateMsgFilterBo.getUserid(),privateMsgFilterBo.getReceiveUserid());
         Page pageData = new Page();
         pageData.setData(page.getContent());
-        pageData.setTotal(page.getContent().size());
+        pageData.setTotal(total);
         return pageData;
     }
 

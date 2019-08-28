@@ -27,6 +27,8 @@ public class PrivateMsgEntity {
 
     private int isRead;//-1未读 0已读
 
+    private int type;//0 text 1 voice -1img
+
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;

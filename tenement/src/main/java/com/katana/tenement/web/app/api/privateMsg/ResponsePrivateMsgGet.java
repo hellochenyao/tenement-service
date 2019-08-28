@@ -29,6 +29,8 @@ public class ResponsePrivateMsgGet {
 
         private int isRead;//-1未读 0已读
 
+        private String type;
+
         private String createTime;
     }
 }
