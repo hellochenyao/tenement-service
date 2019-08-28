@@ -1,7 +1,7 @@
 package com.katana.tenement.dao.app.impl;
 
 import com.katana.tenement.dao.app.PrivateMsgDao;
-import com.katana.tenement.dao.app.vo.privateMsg.PrivateMsgFilterVo;
+import com.katana.tenement.dao.app.vo.privateMsg.PrivateMsgUserReceiveFilterVo;
 import com.katana.tenement.domain.entity.PrivateMsgEntity;
 import com.katana.tenement.framework.dto.page.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +19,19 @@ public class PrivateMsgDaoImpl implements PrivateMsgDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Override
-    public Page<PrivateMsgEntity> findUserPrivateMsg(PrivateMsgFilterVo privateFilter) {
+    public Page<PrivateMsgEntity> findConnectMsg(PrivateMsgUserReceiveFilterVo privateFilter) {
         StringBuilder sql = new StringBuilder();
-        sql.append("select * from private_msg t WHERE 1=1");
+        sql.append("select * from private_msg WHERE 1=1");
         List<Object> param = new ArrayList<>();
-        if(privateFilter.getReceiveUserid()!=null&& !StringUtils.isEmpty(privateFilter.getReceiveUserid())){
-            sql.append(" and t.receive_userid = ? ");
-            param.add(privateFilter.getReceiveUserid());
-        }
         if(privateFilter.getUserid()!=null&&!StringUtils.isEmpty(privateFilter.getUserid())){
-            sql.append(" or t.userid = ? ");
+            sql.append(" and userid = ? ");
             param.add(privateFilter.getUserid());
+            sql.append("and receive_userid not in( SELECT userid from private_msg  WHERE receive_userid = ? ");
+            param.add(privateFilter.getUserid());
+            sql.append("GROUP BY userid) GROUP BY receive_userid union SELECT * from private_msg  WHERE receive_userid = ? ");
+            param.add(privateFilter.getUserid());
+            sql.append(" GROUP BY userid ORDER BY create_time desc");
         }
-        sql.append(" order by t.create_time desc");
         if(privateFilter.getPageNo()!=0 && privateFilter.getPageSize()!=0){
             sql.append(" limit ?,? ");
             param.add((privateFilter.getPageNo()-1)*privateFilter.getPageSize());

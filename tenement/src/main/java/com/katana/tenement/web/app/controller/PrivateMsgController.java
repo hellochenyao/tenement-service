@@ -1,5 +1,6 @@
 package com.katana.tenement.web.app.controller;
 
+import com.katana.tenement.dao.app.vo.privateMsg.PrivateMsgUserReceiveFilterVo;
 import com.katana.tenement.dao.app.vo.userinfo.UserInfoVo;
 import com.katana.tenement.domain.entity.PrivateMsgEntity;
 import com.katana.tenement.framework.dto.page.Page;
@@ -8,7 +9,9 @@ import com.katana.tenement.service.app.PrivateMsgService;
 import com.katana.tenement.service.app.UserInfoService;
 import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgBo;
 import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgFilterBo;
+import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgReceiveUserFilterBo;
 import com.katana.tenement.web.app.api.privateMsg.RequestPrivateMsgFilterGet;
+import com.katana.tenement.web.app.api.privateMsg.RequestPrivateMsgReceiveFilterGet;
 import com.katana.tenement.web.app.api.privateMsg.ResponsePrivateMsgGet;
 import com.katana.tenement.web.app.api.privateMsg.ResponseReceiveMsgGet;
 import io.swagger.annotations.Api;
@@ -61,17 +64,17 @@ public class PrivateMsgController {
 
     }
 
-    @RequestMapping(value = "/find/user/receive/msg",method = RequestMethod.GET)
-    @ApiOperation("查找用户收到的历史消息")
-    public ResponseReceiveMsgGet getUserReceiveMsg(@PathVariable("userId") Integer userId, RequestPrivateMsgFilterGet requestPrivateMsgFilterGet){
-        PrivateMsgFilterBo privateMsgFilterBo = new PrivateMsgFilterBo();
+    @RequestMapping(value = "/find/user/receive/last/msg",method = RequestMethod.GET)
+    @ApiOperation("查找用户收到的最后一条消息和联系人")
+    public ResponseReceiveMsgGet getUserReceiveMsgAndUser(@PathVariable("userId") Integer userId, RequestPrivateMsgReceiveFilterGet requestPrivateMsgFilterGet){
+        PrivateMsgReceiveUserFilterBo privateMsgFilterBo = new PrivateMsgReceiveUserFilterBo();
         BeanUtils.copyProperties(requestPrivateMsgFilterGet,privateMsgFilterBo);
-        privateMsgFilterBo.setReceiveUserid(requestPrivateMsgFilterGet.getReceiveUserid());
         privateMsgFilterBo.setUserid(userId);
         Page<PrivateMsgEntity> page = privateMsgService.findUserReceiveMsg(privateMsgFilterBo);
         ResponseReceiveMsgGet response = new ResponseReceiveMsgGet();
         List<ResponseReceiveMsgGet.Message> messages = new ArrayList<>();
         page.getData().forEach(e->{
+            int noReadNums = 0;
             ResponseReceiveMsgGet.Message message = new ResponseReceiveMsgGet.Message();
             BeanUtils.copyProperties(e,message);
             Integer fromUserId;
@@ -79,12 +82,14 @@ public class PrivateMsgController {
                 fromUserId = e.getReceiveUserid();
             }else{
                 fromUserId = e.getUserid();
+                noReadNums = privateMsgService.findNoReadNums(e.getUserid(),userId,-1);
             }
             UserInfoVo fromUserInfo = userInfoService.info(fromUserId);
             message.setFromUserAvatar(fromUserInfo.getAvatar());
             message.setFromUserid(fromUserId);
             message.setFromUserNickName(fromUserInfo.getNickName());
             message.setCreateTime(DateUtils.getLocalDateTimeStr(e.getCreateTime()));
+            message.setNoReadNums(noReadNums);
             messages.add(message);
         });
         response.setMessages(messages);
