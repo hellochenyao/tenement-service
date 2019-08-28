@@ -4,6 +4,7 @@ import com.katana.tenement.domain.entity.PrivateMsgEntity;
 import com.katana.tenement.framework.dto.page.Page;
 import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgBo;
 import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgFilterBo;
+import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgReceiveUserFilterBo;
 
 public interface PrivateMsgService {
 
@@ -11,6 +12,7 @@ public interface PrivateMsgService {
 
     Page<PrivateMsgEntity> findHistoryMsg(PrivateMsgFilterBo privateMsgFilterBo);
 
-    Page<PrivateMsgEntity> findUserReceiveMsg(PrivateMsgFilterBo privateMsgFilterBo);
+    Page<PrivateMsgEntity> findUserReceiveMsg(PrivateMsgReceiveUserFilterBo privateMsgFilterBo);
 
+    Integer findNoReadNums(int userid,int receiveUserid,int readType);
 }

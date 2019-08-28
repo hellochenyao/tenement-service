@@ -12,4 +12,7 @@ import org.springframework.data.repository.query.Param;
 public interface PrivateMsgRepo extends CrudRepository<PrivateMsgEntity,Integer> , JpaSpecificationExecutor<PrivateMsgEntity> {
     @Query("select t from PrivateMsgEntity t where t.userid = :userId and t.receiveUserid = :receiveUserId or t.userid= :receiveUserId and t.receiveUserid = :userId")
     Page<PrivateMsgEntity> findHistoryMsg(@Param("userId") int userId, @Param("receiveUserId") int receiveUserId, Pageable pageable);
+
+    @Query("select count(t) from PrivateMsgEntity t where t.userid = :userid and t.receiveUserid = :receiveUserid and t.isRead = :isRead")
+    Integer findNoReadNums(@Param("userid") int userId,@Param("receiveUserid") int receiveUserid,@Param("isRead") int isRead);
 }

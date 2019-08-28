@@ -3,7 +3,7 @@ package com.katana.tenement.service.app.impl;
 import com.katana.tenement.dao.app.PrivateMsgDao;
 import com.katana.tenement.dao.app.PrivateMsgRepo;
 import com.katana.tenement.dao.app.UserRelationRepo;
-import com.katana.tenement.dao.app.vo.privateMsg.PrivateMsgFilterVo;
+import com.katana.tenement.dao.app.vo.privateMsg.PrivateMsgUserReceiveFilterVo;
 import com.katana.tenement.domain.entity.PrivateMsgEntity;
 import com.katana.tenement.domain.entity.UserRelationEntity;
 import com.katana.tenement.framework.dto.page.Page;
@@ -11,7 +11,7 @@ import com.katana.tenement.framework.exception.BusinessException;
 import com.katana.tenement.service.app.PrivateMsgService;
 import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgBo;
 import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgFilterBo;
-import com.katana.tenement.service.app.bo.userRelation.UserRelationBo;
+import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgReceiveUserFilterBo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -53,10 +53,16 @@ public class PrivateMsgServiceImpl implements PrivateMsgService {
     }
 
     @Override
-    public Page<PrivateMsgEntity> findUserReceiveMsg(PrivateMsgFilterBo privateMsgFilterBo) {
-        PrivateMsgFilterVo privateVo = new PrivateMsgFilterVo();
+    public Page<PrivateMsgEntity> findUserReceiveMsg(PrivateMsgReceiveUserFilterBo privateMsgFilterBo) {
+        PrivateMsgUserReceiveFilterVo privateVo = new PrivateMsgUserReceiveFilterVo();
         BeanUtils.copyProperties(privateMsgFilterBo,privateVo);
-        Page<PrivateMsgEntity> page = privateMsgDao.findUserPrivateMsg(privateVo);
+        Page<PrivateMsgEntity> page = privateMsgDao.findConnectMsg(privateVo);
         return page;
+    }
+
+    @Override
+    public Integer findNoReadNums(int userid, int receiveUserid, int readType) {
+
+        return privateMsgRepo.findNoReadNums(userid,receiveUserid,readType);
     }
 }
