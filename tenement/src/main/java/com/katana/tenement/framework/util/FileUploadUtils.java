@@ -28,7 +28,7 @@ public class FileUploadUtils {
         String fileName = file.getOriginalFilename();
         // 获取文件的后缀名
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
-        if ((fileType == 0 && !ImageUtils.isImage(file.getContentType(), suffixName.replace(".", ""))) || (fileType == 1 && !isVideo(file.getOriginalFilename()))) {
+        if ((fileType == 0 && !ImageUtils.isImage(file.getContentType(), suffixName.replace(".", ""))) || (fileType == 1 && !isVideo(file.getOriginalFilename())) || (fileType == -1 && !isMp3(file.getOriginalFilename()))) {
             throw new IllegalParameterException(IllegalParameterException.CodeOption.INVALID_FILE_EXTENSION);
         }
         fileName = UNIDGenerateUtils.getUnid() + suffixName;
@@ -45,10 +45,22 @@ public class FileUploadUtils {
         }
     }
 
+
     public static Boolean isVideo(String fileName) {
         Pattern p = null;
         try {
             String reg = "(mp4|flv|avi|rm|rmvb|wmv)";
+            p = Pattern.compile(reg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return p.matcher(fileName).find();
+    }
+
+    public static Boolean isMp3(String fileName) {
+        Pattern p = null;
+        try {
+            String reg = "wav|midi|cda|mp3|wmv";
             p = Pattern.compile(reg);
         } catch (Exception e) {
             e.printStackTrace();

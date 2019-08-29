@@ -5,26 +5,29 @@ import com.katana.tenement.dao.app.vo.userinfo.UserInfoVo;
 import com.katana.tenement.domain.emuns.MessageTypeEnum;
 import com.katana.tenement.domain.emuns.RentTypeEnum;
 import com.katana.tenement.domain.entity.PrivateMsgEntity;
+import com.katana.tenement.framework.constant.ConstantConfig;
 import com.katana.tenement.framework.dto.page.Page;
 import com.katana.tenement.framework.util.DateUtils;
+import com.katana.tenement.framework.util.FileUploadUtils;
 import com.katana.tenement.service.app.PrivateMsgService;
 import com.katana.tenement.service.app.UserInfoService;
 import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgBo;
 import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgFilterBo;
 import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgReceiveUserFilterBo;
+import com.katana.tenement.web.app.api.invitation.ResponseHousingResourcePost;
 import com.katana.tenement.web.app.api.privateMsg.RequestPrivateMsgFilterGet;
 import com.katana.tenement.web.app.api.privateMsg.RequestPrivateMsgReceiveFilterGet;
 import com.katana.tenement.web.app.api.privateMsg.ResponsePrivateMsgGet;
 import com.katana.tenement.web.app.api.privateMsg.ResponseReceiveMsgGet;
+import com.katana.tenement.web.main.utils.PathUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,5 +114,18 @@ public class PrivateMsgController {
         response.setTotal(page.getTotal());
         return response;
 
+    }
+    @RequestMapping(value = "/picture/message/upload/{fileType}",method = RequestMethod.POST)
+    @ApiOperation("发聊天的图片 0图片 1视频")
+    public ResponseHousingResourcePost upload(MultipartFile fileResource,@PathVariable("fileType") int fileType, @PathVariable("userId") int userId, @RequestParam int toUserid) {
+        String path = PathUtils.getJarPath() + File.separator + ConstantConfig.UPLOAD_DIRECTORY_NAME + File.separator + ConstantConfig.UPLOAD_PICTURE+File.separator+"message"+File.separator+userId+"-"+toUserid;
+        File file = new File(path);
+        if (!file.isDirectory()) {
+            file.mkdirs();
+        }
+        String imgUrl = FileUploadUtils.upload(fileResource, path,fileType);
+        ResponseHousingResourcePost response = new ResponseHousingResourcePost();
+        response.setResourceUrl("message"+File.separator+userId+"-"+toUserid+ File.separator+ imgUrl);
+        return response;
     }
 }
