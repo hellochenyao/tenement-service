@@ -28,7 +28,7 @@ public class PrivateMsgDaoImpl implements PrivateMsgDao {
             param.add(privateFilter.getUserid());
             sql.append("and receive_userid not in( SELECT userid from private_msg  WHERE receive_userid = ? ");
             param.add(privateFilter.getUserid());
-            sql.append("GROUP BY userid) GROUP BY receive_userid union SELECT * from private_msg  WHERE receive_userid = ? ");
+            sql.append("GROUP BY userid) group by receive_userid  union SELECT * from private_msg  WHERE receive_userid = ?  ");
             param.add(privateFilter.getUserid());
             sql.append(" GROUP BY userid ORDER BY create_time desc");
         }

@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.katana.tenement.dao.app.PrivateMsgRepo;
 import com.katana.tenement.dao.app.vo.userinfo.UserInfoVo;
+import com.katana.tenement.domain.emuns.MessageTypeEnum;
 import com.katana.tenement.framework.dto.message.Message;
 import com.katana.tenement.framework.util.DateUtils;
 import com.katana.tenement.service.app.PrivateMsgService;
@@ -106,6 +107,8 @@ public class WebSocketServer {
                     JSONObject object = list.getJSONObject(i);
                     String toUserId=object.getString("toUserId");
                     String contentText=object.getString("contentText");
+                    String megType= object.getString("type");
+                    int type =MessageTypeEnum.getEnumByValue(megType).getCode();
                     object.put("fromUserId",this.userId);
                     //传送给对应用户的websocket
                     if(StringUtils.isNotBlank(toUserId)&&StringUtils.isNotBlank(contentText)){
@@ -113,18 +116,6 @@ public class WebSocketServer {
                         String createTime = DateUtils.getLocalDateTimeStr(LocalDateTime.now());
                         int toUser = Integer.parseInt(toUserId);
                         int user = Integer.parseInt(userId);
-                        //需要进行转换，userId
-                        if(socketx!=null){
-                            UserInfoVo userInfo = userInfoService.info(Integer.parseInt(userId));
-                            Message messageText = new Message();
-                            messageText.setAvatar(userInfo.getAvatar());
-                            messageText.setContent(contentText);
-                            messageText.setNickName(userInfo.getNickName());
-                            messageText.setCreateTime(createTime);
-                            messageText.setUserid(user);
-                            socketx.sendMessage(JSONObject.toJSONString(messageText));
-                            //此处可以放置相关业务代码，例如存储到数据库
-                        }
                         PrivateMsgBo privateMsgBo = new PrivateMsgBo();
                         privateMsgBo.setUpdateTime(LocalDateTime.now());
                         privateMsgBo.setCreateTime(LocalDateTime.now());
@@ -132,7 +123,17 @@ public class WebSocketServer {
                         privateMsgBo.setReceiveUserid(toUser);
                         privateMsgBo.setUserid(user);
                         privateMsgBo.setIsRead(-1);
+                        privateMsgBo.setType(type);
                         privateMsgService.saveMsg(privateMsgBo);
+                        JSONObject response = new JSONObject();
+                        //需要进行转换，userId
+                        if(socketx!=null){
+                            response.put("code","newMsg");
+                            socketx.sendMessage(JSONObject.toJSONString(JSONObject.toJSONString(response)));
+                            //此处可以放置相关业务代码，例如存储到数据库
+                        }
+                        response.put("code","success");
+                        this.sendMessage(JSONObject.toJSONString(response));
                     }
                 }catch (Exception e){
                     e.printStackTrace();

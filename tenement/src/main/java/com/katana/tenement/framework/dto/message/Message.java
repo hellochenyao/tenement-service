@@ -15,4 +15,6 @@ public class Message {
 
     private String createTime;
 
+    private String type;
+
 }

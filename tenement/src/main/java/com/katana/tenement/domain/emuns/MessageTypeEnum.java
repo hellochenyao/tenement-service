@@ -21,10 +21,19 @@ public enum MessageTypeEnum implements EnumsValue {
     public  String getValue() {
         return value;
     }
-    public static MessageTypeEnum getEnumType(int code){
+    public static MessageTypeEnum getEnumByCode(int code){
         MessageTypeEnum[] messageTypeEnums= MessageTypeEnum.values();
         for(MessageTypeEnum messageTypeEnum : messageTypeEnums){
             if(messageTypeEnum.getCode()==code){
+                return messageTypeEnum;
+            }
+        }
+        return null;
+    }
+    public static MessageTypeEnum getEnumByValue(String value){
+        MessageTypeEnum[] messageTypeEnums= MessageTypeEnum.values();
+        for(MessageTypeEnum messageTypeEnum : messageTypeEnums){
+            if(messageTypeEnum.getValue().equals(value)){
                 return messageTypeEnum;
             }
         }

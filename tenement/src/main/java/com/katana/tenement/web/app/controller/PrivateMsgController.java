@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class PrivateMsgController {
             UserInfoVo userInfo = userInfoService.info(e.getUserid());
             UserInfoVo toUserInfo = userInfoService.info(e.getReceiveUserid());
             message.setReceiveUserNickName(toUserInfo.getNickName());
-            message.setType(MessageTypeEnum.getEnumType(e.getType()).getValue());
+            message.setType(MessageTypeEnum.getEnumByCode(e.getType()).getValue());
             message.setReceiveUserAvatar(toUserInfo.getAvatar());
             message.setUserAvatar(userInfo.getAvatar());
             message.setUserNickName(userInfo.getNickName());
@@ -81,18 +82,28 @@ public class PrivateMsgController {
             ResponseReceiveMsgGet.Message message = new ResponseReceiveMsgGet.Message();
             BeanUtils.copyProperties(e,message);
             Integer fromUserId;
-            if(e.getUserid()==userId){
+            if(e.getUserid().equals(userId)){
                 fromUserId = e.getReceiveUserid();
             }else{
                 fromUserId = e.getUserid();
                 noReadNums = privateMsgService.findNoReadNums(e.getUserid(),userId,-1);
             }
+            PrivateMsgFilterBo filterBo = new PrivateMsgFilterBo();
+            filterBo.setReceiveUserid(e.getReceiveUserid());
+            filterBo.setUserid(e.getUserid());
+            filterBo.setPageNo(1);
+            filterBo.setPageSize(10);
+            Page<PrivateMsgEntity> msgEntityPage = privateMsgService.findHistoryMsg(filterBo);
+            if(msgEntityPage.getTotal()>0){
+                LocalDateTime create = msgEntityPage.getData().get(0).getCreateTime();
+                message.setCreateTime(DateUtils.getLocalDateTimeStr(create));
+                message.setContent(msgEntityPage.getData().get(0).getContent());
+            }
             UserInfoVo fromUserInfo = userInfoService.info(fromUserId);
-            message.setType(MessageTypeEnum.getEnumType(e.getType()).getValue());
+            message.setType(MessageTypeEnum.getEnumByCode(e.getType()).getValue());
             message.setFromUserAvatar(fromUserInfo.getAvatar());
             message.setFromUserid(fromUserId);
             message.setFromUserNickName(fromUserInfo.getNickName());
-            message.setCreateTime(DateUtils.getLocalDateTimeStr(e.getCreateTime()));
             message.setNoReadNums(noReadNums);
             messages.add(message);
         });
