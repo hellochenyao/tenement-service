@@ -19,6 +19,7 @@ import com.katana.tenement.dao.app.PrivateMsgRepo;
 import com.katana.tenement.dao.app.vo.userinfo.UserInfoVo;
 import com.katana.tenement.domain.emuns.MessageTypeEnum;
 import com.katana.tenement.framework.dto.message.Message;
+import com.katana.tenement.framework.exception.BusinessException;
 import com.katana.tenement.framework.util.DateUtils;
 import com.katana.tenement.service.app.PrivateMsgService;
 import com.katana.tenement.service.app.UserInfoService;
@@ -108,6 +109,7 @@ public class WebSocketServer {
                     String toUserId=object.getString("toUserId");
                     String contentText=object.getString("contentText");
                     String megType= object.getString("type");
+                    String msgId = object.getString("id");
                     int type =MessageTypeEnum.getEnumByValue(megType).getCode();
                     object.put("fromUserId",this.userId);
                     //传送给对应用户的websocket
@@ -116,20 +118,27 @@ public class WebSocketServer {
                         String createTime = DateUtils.getLocalDateTimeStr(LocalDateTime.now());
                         int toUser = Integer.parseInt(toUserId);
                         int user = Integer.parseInt(userId);
-                        PrivateMsgBo privateMsgBo = new PrivateMsgBo();
-                        privateMsgBo.setUpdateTime(LocalDateTime.now());
-                        privateMsgBo.setCreateTime(LocalDateTime.now());
-                        privateMsgBo.setContent(contentText);
-                        privateMsgBo.setReceiveUserid(toUser);
-                        privateMsgBo.setUserid(user);
-                        privateMsgBo.setIsRead(-1);
-                        privateMsgBo.setType(type);
-                        privateMsgService.saveMsg(privateMsgBo);
                         JSONObject response = new JSONObject();
+                        try{
+                            PrivateMsgBo privateMsgBo = new PrivateMsgBo();
+                            privateMsgBo.setUpdateTime(LocalDateTime.now());
+                            privateMsgBo.setCreateTime(LocalDateTime.now());
+                            privateMsgBo.setContent(contentText);
+                            privateMsgBo.setReceiveUserid(toUser);
+                            privateMsgBo.setUserid(user);
+                            privateMsgBo.setIsRead(-1);
+                            privateMsgBo.setType(type);
+                            privateMsgService.saveMsg(privateMsgBo);
+                        }catch(Exception e){
+                            response.put("code","error");
+                            response.put("id",msgId);
+                            this.sendMessage(JSONObject.toJSONString(response));
+                            throw new BusinessException("SEND_ERROR","消息发送失败");
+                        }
                         //需要进行转换，userId
                         if(socketx!=null){
                             response.put("code","newMsg");
-                            socketx.sendMessage(JSONObject.toJSONString(JSONObject.toJSONString(response)));
+                            socketx.sendMessage(JSONObject.toJSONString(response));
                             //此处可以放置相关业务代码，例如存储到数据库
                         }
                         response.put("code","success");
