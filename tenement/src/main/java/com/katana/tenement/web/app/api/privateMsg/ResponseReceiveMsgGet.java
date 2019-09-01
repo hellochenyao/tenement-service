@@ -20,6 +20,8 @@ public class ResponseReceiveMsgGet {
 
         private String fromUserNickName;
 
+        private String desc;
+
         private int noReadNums;
 
         private int isRead;//-1未读 0已读

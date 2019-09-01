@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created by mumu on 2019/3/27.
@@ -67,8 +68,8 @@ public class UserInfoServiceImpl implements UserInfoService {
 
         if (userInfo == null) {
             //首次登陆
-            UserInfoEntity lastUser = userInfoDao.findRecords();
-            Integer userId = lastUser.getId()+1;
+            List<UserInfoEntity > lastUser = userInfoDao.findRecords();
+            Integer userId = lastUser.get(0).getId()+1;
             userInfo = new UserInfoEntity();
             userInfo.setId(userId);
             userInfo.setOpenId(sessionKey.getOpenid());

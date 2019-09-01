@@ -7,21 +7,22 @@ import com.katana.tenement.domain.emuns.RentTypeEnum;
 import com.katana.tenement.domain.entity.PrivateMsgEntity;
 import com.katana.tenement.framework.constant.ConstantConfig;
 import com.katana.tenement.framework.dto.page.Page;
+import com.katana.tenement.framework.exception.BusinessException;
 import com.katana.tenement.framework.util.DateUtils;
 import com.katana.tenement.framework.util.FileUploadUtils;
+import com.katana.tenement.framework.websocket.WebSocketServer;
 import com.katana.tenement.service.app.PrivateMsgService;
 import com.katana.tenement.service.app.UserInfoService;
 import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgBo;
 import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgFilterBo;
 import com.katana.tenement.service.app.bo.privateMsg.PrivateMsgReceiveUserFilterBo;
 import com.katana.tenement.web.app.api.invitation.ResponseHousingResourcePost;
-import com.katana.tenement.web.app.api.privateMsg.RequestPrivateMsgFilterGet;
-import com.katana.tenement.web.app.api.privateMsg.RequestPrivateMsgReceiveFilterGet;
-import com.katana.tenement.web.app.api.privateMsg.ResponsePrivateMsgGet;
-import com.katana.tenement.web.app.api.privateMsg.ResponseReceiveMsgGet;
+import com.katana.tenement.web.app.api.privateMsg.*;
 import com.katana.tenement.web.main.utils.PathUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +36,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/app/tenement/{userId}")
 @Api(tags = "APP-私信模块")
+@Slf4j
 public class PrivateMsgController {
 
     @Autowired
@@ -101,6 +103,7 @@ public class PrivateMsgController {
                 LocalDateTime create = msgEntityPage.getData().get(0).getCreateTime();
                 message.setCreateTime(DateUtils.getLocalDateTimeStr(create));
                 message.setContent(msgEntityPage.getData().get(0).getContent());
+                message.setDesc(msgEntityPage.getData().get(0).getDescText());
             }
             UserInfoVo fromUserInfo = userInfoService.info(fromUserId);
             message.setType(MessageTypeEnum.getEnumByCode(e.getType()).getValue());
@@ -127,5 +130,29 @@ public class PrivateMsgController {
         ResponseHousingResourcePost response = new ResponseHousingResourcePost();
         response.setResourceUrl("message"+File.separator+userId+"-"+toUserid+ File.separator+ imgUrl);
         return response;
+    }
+
+    @RequestMapping(value = "/private/send/message",method = RequestMethod.POST)
+    @ApiOperation("发消息")
+    public void saveMessage(@RequestBody RequestPrivateMsgPost request,@PathVariable("userId") Integer userId){
+        PrivateMsgBo privateMsgBo = new PrivateMsgBo();
+        int type =MessageTypeEnum.getEnumByValue(request.getType()).getCode();
+        BeanUtils.copyProperties(request,privateMsgBo);
+        privateMsgBo.setUpdateTime(LocalDateTime.now());
+        privateMsgBo.setCreateTime(LocalDateTime.now());
+        privateMsgBo.setUserid(userId);
+        privateMsgBo.setContent(request.getContent());
+        privateMsgBo.setIsRead(-1);
+        privateMsgBo.setType(type);
+        try{
+        privateMsgService.saveMsg(privateMsgBo);
+        }catch (Exception e){
+            log.info(e.getMessage());
+            e.printStackTrace();
+            WebSocketServer.sendInfo(request.getMsgId(),"error",-1,userId);
+            throw new BusinessException("SEND_ERROR","消息发送失败");
+        }
+        WebSocketServer.sendInfo(request.getMsgId(),"newMsg",request.getReceiveUserid(),userId);
+        WebSocketServer.sendInfo(request.getMsgId(),"success",-1,userId);
     }
 }

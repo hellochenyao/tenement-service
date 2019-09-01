@@ -29,6 +29,8 @@ public class PrivateMsgEntity {
 
     private int type;//0 text 1 voice -1img
 
+    private String descText;
+
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;

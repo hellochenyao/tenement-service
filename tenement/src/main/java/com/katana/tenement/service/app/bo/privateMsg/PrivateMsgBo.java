@@ -19,6 +19,8 @@ public class PrivateMsgBo {
 
     private int type;
 
+    private String descText;
+
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;

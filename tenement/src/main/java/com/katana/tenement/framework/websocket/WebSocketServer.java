@@ -2,6 +2,8 @@ package com.katana.tenement.framework.websocket;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.websocket.OnClose;
@@ -100,56 +102,8 @@ public class WebSocketServer {
     @OnMessage
     public void onMessage(String message, Session session) {
         log.info("收到来自窗口"+userId+"的信息:"+message);
-        if(StringUtils.isNotBlank(message)){
-            JSONArray list=JSONArray.parseArray(message);
-            for (int i = 0; i < list.size(); i++) {
-                try {
-                    //解析发送的报文
-                    JSONObject object = list.getJSONObject(i);
-                    String toUserId=object.getString("toUserId");
-                    String contentText=object.getString("contentText");
-                    String megType= object.getString("type");
-                    String msgId = object.getString("id");
-                    int type =MessageTypeEnum.getEnumByValue(megType).getCode();
-                    object.put("fromUserId",this.userId);
-                    //传送给对应用户的websocket
-                    if(StringUtils.isNotBlank(toUserId)&&StringUtils.isNotBlank(contentText)){
-                        WebSocketServer socketx=websocketList.get(toUserId);
-                        String createTime = DateUtils.getLocalDateTimeStr(LocalDateTime.now());
-                        int toUser = Integer.parseInt(toUserId);
-                        int user = Integer.parseInt(userId);
-                        JSONObject response = new JSONObject();
-                        try{
-                            PrivateMsgBo privateMsgBo = new PrivateMsgBo();
-                            privateMsgBo.setUpdateTime(LocalDateTime.now());
-                            privateMsgBo.setCreateTime(LocalDateTime.now());
-                            privateMsgBo.setContent(contentText);
-                            privateMsgBo.setReceiveUserid(toUser);
-                            privateMsgBo.setUserid(user);
-                            privateMsgBo.setIsRead(-1);
-                            privateMsgBo.setType(type);
-                            privateMsgService.saveMsg(privateMsgBo);
-                        }catch(Exception e){
-                            response.put("code","error");
-                            response.put("id",msgId);
-                            this.sendMessage(JSONObject.toJSONString(response));
-                            throw new BusinessException("SEND_ERROR","消息发送失败");
-                        }
-                        //需要进行转换，userId
-                        if(socketx!=null){
-                            response.put("code","newMsg");
-                            socketx.sendMessage(JSONObject.toJSONString(response));
-                            //此处可以放置相关业务代码，例如存储到数据库
-                        }
-                        response.put("code","success");
-                        this.sendMessage(JSONObject.toJSONString(response));
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }
     }
+
 
     /**
      *
@@ -172,21 +126,31 @@ public class WebSocketServer {
     /**
      * 群发自定义消息
      * */
-    /*public static void sendInfo(String message,@PathParam("userId") String userId) throws IOException {
-        log.info("推送消息到窗口"+userId+"，推送内容:"+message);
-        for (ImController item : webSocketSet) {
-            try {
-                //这里可以设定只推送给这个sid的，为null则全部推送
-                if(userId==null) {
-                    item.sendMessage(message);
-                }else if(item.userId.equals(userId)){
-                    item.sendMessage(message);
+    public static void sendInfo(int msgId,String type,Integer toUserid, Integer userId) {
+        log.info("推送消息到窗口"+userId+"，推送内容:"+type);
+        String toUserId = String.valueOf(toUserid);
+        String sendUserId = String.valueOf(userId);
+        if(StringUtils.isNotBlank(toUserId)&&StringUtils.isNotBlank(type)){
+            WebSocketServer receivetx=websocketList.get(toUserId);
+            WebSocketServer sendtx=websocketList.get(sendUserId);//发消息的人
+            JSONObject response = new JSONObject();
+            response.put("code",type);
+            if(receivetx!=null){
+                response.put("toUser",toUserId);
+                try {
+                    receivetx.sendMessage(JSONObject.toJSONString(response));
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+            }
+            response.put("id",msgId);
+            try {
+                sendtx.sendMessage(JSONObject.toJSONString(response));
             } catch (IOException e) {
-                continue;
+                e.printStackTrace();
             }
         }
-    }*/
+    }
 
     public static synchronized int getOnlineCount() {
         return onlineCount;

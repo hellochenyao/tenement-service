@@ -43,9 +43,9 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(loginJwtInterception())
-//                .addPathPatterns("/app/**")
-//                .excludePathPatterns("/app/*/auth/**");
+        registry.addInterceptor(loginJwtInterception())
+                .addPathPatterns("/app/**")
+                .excludePathPatterns("/app/*/auth/**");
     }
 
     @Bean
