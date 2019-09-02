@@ -103,7 +103,7 @@ public class PrivateMsgController {
                 LocalDateTime create = msgEntityPage.getData().get(0).getCreateTime();
                 message.setCreateTime(DateUtils.getLocalDateTimeStr(create));
                 message.setContent(msgEntityPage.getData().get(0).getContent());
-                message.setDesc(msgEntityPage.getData().get(0).getDescText());
+                message.setDescText(msgEntityPage.getData().get(0).getDescText());
             }
             UserInfoVo fromUserInfo = userInfoService.info(fromUserId);
             message.setType(MessageTypeEnum.getEnumByCode(e.getType()).getValue());
@@ -145,14 +145,20 @@ public class PrivateMsgController {
         privateMsgBo.setIsRead(-1);
         privateMsgBo.setType(type);
         try{
-        privateMsgService.saveMsg(privateMsgBo);
+            privateMsgService.saveMsg(privateMsgBo);
         }catch (Exception e){
             log.info(e.getMessage());
             e.printStackTrace();
             WebSocketServer.sendInfo(request.getMsgId(),"error",-1,userId);
             throw new BusinessException("SEND_ERROR","消息发送失败");
         }
-        WebSocketServer.sendInfo(request.getMsgId(),"newMsg",request.getReceiveUserid(),userId);
+        WebSocketServer.sendInfo(request.getMsgId(),"newMsg",request.getReceiveUserid(),-1);
         WebSocketServer.sendInfo(request.getMsgId(),"success",-1,userId);
+    }
+
+    @RequestMapping(value="/private/message/delete/{receiveUserid}",method = RequestMethod.DELETE)
+    @ApiOperation("删除所有消息")
+    public void deleteMsg(@PathVariable("receiveUserid") int receiveUserid,@PathVariable("userId") int userId){
+        privateMsgService.deleteAllMsg(receiveUserid,userId);
     }
 }

@@ -66,4 +66,9 @@ public class PrivateMsgServiceImpl implements PrivateMsgService {
 
         return privateMsgRepo.findNoReadNums(userid,receiveUserid,readType);
     }
+
+    @Override
+    public void deleteAllMsg(int userid, int receiveUserid) {
+        privateMsgDao.deleteMsg(userid,receiveUserid);
+    }
 }

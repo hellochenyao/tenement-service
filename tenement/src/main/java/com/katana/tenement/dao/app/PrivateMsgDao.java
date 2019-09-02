@@ -7,4 +7,6 @@ import com.katana.tenement.framework.dto.page.Page;
 
 public interface PrivateMsgDao {
     Page<PrivateMsgEntity> findConnectMsg(PrivateMsgUserReceiveFilterVo privateFilter);
+
+    void deleteMsg(int userid,int receiveUserid);
 }

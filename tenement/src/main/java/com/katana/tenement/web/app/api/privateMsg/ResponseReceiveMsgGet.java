@@ -20,7 +20,7 @@ public class ResponseReceiveMsgGet {
 
         private String fromUserNickName;
 
-        private String desc;
+        private String descText;
 
         private int noReadNums;
 

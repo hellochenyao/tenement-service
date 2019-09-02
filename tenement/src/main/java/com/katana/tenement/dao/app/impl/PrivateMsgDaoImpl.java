@@ -46,4 +46,16 @@ public class PrivateMsgDaoImpl implements PrivateMsgDao {
         page.setTotal(total);
         return page;
     }
+
+    @Override
+    public void deleteMsg(int userid, int receiveUserid) {
+        StringBuilder sql = new StringBuilder();
+        List<Object> params = new ArrayList<>();
+        sql.append("delete from private_msg where userid=? and receive_userid=? or receive_userid = ? and userid=?");
+        params.add(userid);
+        params.add(receiveUserid);
+        params.add(userid);
+        params.add(receiveUserid);
+        jdbcTemplate.update(sql.toString(),params.toArray());
+    }
 }

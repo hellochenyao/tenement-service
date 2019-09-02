@@ -15,4 +15,6 @@ public interface PrivateMsgService {
     Page<PrivateMsgEntity> findUserReceiveMsg(PrivateMsgReceiveUserFilterBo privateMsgFilterBo);
 
     Integer findNoReadNums(int userid,int receiveUserid,int readType);
+
+    void deleteAllMsg(int userid,int receiveUserid);
 }

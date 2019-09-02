@@ -144,10 +144,12 @@ public class WebSocketServer {
                 }
             }
             response.put("id",msgId);
-            try {
-                sendtx.sendMessage(JSONObject.toJSONString(response));
-            } catch (IOException e) {
-                e.printStackTrace();
+            if(sendtx!=null){
+                try {
+                    sendtx.sendMessage(JSONObject.toJSONString(response));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
