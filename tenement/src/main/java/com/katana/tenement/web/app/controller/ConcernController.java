@@ -26,8 +26,8 @@ public class ConcernController {
     private ConcernService concernService;
 
     @ApiOperation(value = "关注用户或取关")
-    @RequestMapping(value="/save/record/{type}",method = RequestMethod.POST)
-    public void saveConcern(@RequestParam int toUserid, @PathVariable("userId") int userid,@PathVariable("type") int type){
+    @RequestMapping(value="/save/record/{type}/{toUserid}",method = RequestMethod.POST)
+    public void saveConcern(@PathVariable("toUserid") int toUserid, @PathVariable("userId") int userid,@PathVariable("type") int type){
         if(type==0){
             concernService.saveUserConcern(userid,toUserid);
         }else{
@@ -37,9 +37,9 @@ public class ConcernController {
 
     @ApiOperation(value = "查询某用户的关注数和粉丝数")
     @RequestMapping(value = "/find/nums",method = RequestMethod.GET)
-    public ResponseConcernGet queryNums(int toUserid,@PathVariable("userId") int userId){
+    public ResponseConcernGet queryNums(int toUserid){
         ResponseConcernGet response = new ResponseConcernGet();
-        int concernNums = concernService.queryConcernNums(userId);
+        int concernNums = concernService.queryConcernNums(toUserid);
         int admireNums = concernService.queryAdmiresNums(toUserid);
         response.setConcernNums(concernNums);
         response.setAdmireNums(admireNums);
@@ -48,7 +48,7 @@ public class ConcernController {
 
     @ApiOperation(value="某用户的关注列表或粉丝列表")
     @RequestMapping(value = "find/concern/list/{type}",method = RequestMethod.GET)
-    public ResponseConcernUsersListGet findConcernUsers(@RequestBody RequestConcernUsersFilterGet req,@PathVariable("type") int type){
+    public ResponseConcernUsersListGet findConcernUsers(RequestConcernUsersFilterGet req,@PathVariable("type") int type){
         ConcernFilterBo concernFilterBo = new ConcernFilterBo();
         BeanUtils.copyProperties(req,concernFilterBo);
         concernFilterBo.setType(type);
@@ -65,5 +65,11 @@ public class ConcernController {
         response.setData(list);
         response.setTotal(page.getTotal());
         return response;
+    }
+
+    @ApiOperation(value="是否有关注改用户")
+    @RequestMapping(value="find/concern/state",method = RequestMethod.GET)
+    public Integer findConcernState(int toUserid,@PathVariable("userId") int userId){
+        return concernService.findIsConcern(userId,toUserid);
     }
 }

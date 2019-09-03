@@ -17,6 +17,7 @@ import com.katana.tenement.service.app.bo.concern.ConcernFilterBo;
 import com.katana.tenement.service.app.bo.notice.NoticeBo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -39,6 +40,10 @@ public class ConcernServiceImpl implements ConcernService {
 
     @Override
     public void saveUserConcern(int userid, int toUserid) {
+        ConcernEntity concern = concernRepo.findByUseridAndToUserid(userid,toUserid);
+        if (concern != null) {
+            throw new BusinessException("HAVE_CONCERN","您已关注过改用户，请勿重复关注！");
+        }
         ConcernEntity concernEntity = new ConcernEntity();
         concernEntity.setCreateTime(LocalDateTime.now());
         concernEntity.setUpdateTime(LocalDateTime.now());
@@ -88,11 +93,11 @@ public class ConcernServiceImpl implements ConcernService {
     }
 
     @Override
-    public ConcernEntity findIsConcern(int userid, int toUserid) {
-        ConcernEntity concern = new ConcernEntity();
-        concern.setUserid(userid);
-        concern.setToUserid(toUserid);
-        ConcernEntity concernEntity = concernRepo.findOne(concern).orElse();
-        return null;
+    public Integer findIsConcern(int userid, int toUserid) {
+        ConcernEntity concernEntity = concernRepo.findByUseridAndToUserid(userid,toUserid);
+        if(concernEntity!=null){
+            return 1;
+        }
+        return 0;
     }
 }

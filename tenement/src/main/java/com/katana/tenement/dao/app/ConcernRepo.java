@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface ConcernRepo extends JpaSpecificationExecutor<ConcernEntity> , CrudRepository<ConcernEntity,Integer> {
     ConcernEntity findByUseridAndToUserid(int userid,int toUserid);
 

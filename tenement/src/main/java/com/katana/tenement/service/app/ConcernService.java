@@ -17,5 +17,5 @@ public interface ConcernService {
 
     Page<UserInfoEntity> findConcernList(ConcernFilterBo concernFilterBo);
 
-    ConcernEntity findIsConcern(int userid,int toUserid);
+    Integer findIsConcern(int userid,int toUserid);
 }
