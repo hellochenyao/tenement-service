@@ -86,4 +86,13 @@ public class ConcernServiceImpl implements ConcernService {
         Page<UserInfoEntity> page = concernDao.findConcernUsers(concernFilterVo);
         return page;
     }
+
+    @Override
+    public ConcernEntity findIsConcern(int userid, int toUserid) {
+        ConcernEntity concern = new ConcernEntity();
+        concern.setUserid(userid);
+        concern.setToUserid(toUserid);
+        ConcernEntity concernEntity = concernRepo.findOne(concern).orElse();
+        return null;
+    }
 }

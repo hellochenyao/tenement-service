@@ -1,5 +1,6 @@
 package com.katana.tenement.service.app;
 
+import com.katana.tenement.domain.entity.ConcernEntity;
 import com.katana.tenement.domain.entity.UserInfoEntity;
 import com.katana.tenement.framework.dto.page.Page;
 import com.katana.tenement.service.app.bo.concern.ConcernFilterBo;
@@ -15,4 +16,6 @@ public interface ConcernService {
     Integer queryAdmiresNums(int toUserid);
 
     Page<UserInfoEntity> findConcernList(ConcernFilterBo concernFilterBo);
+
+    ConcernEntity findIsConcern(int userid,int toUserid);
 }
