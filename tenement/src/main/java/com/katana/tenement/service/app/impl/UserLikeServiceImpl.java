@@ -85,7 +85,7 @@ public class UserLikeServiceImpl implements UserLikeService {
         TenementInvitationEntity tenementInvitationEntity = tenementInvitationRepo.findById(invitationId).orElse(null);
         UserLikeBo userLikeBo = findUserLikeByInvitationIdAndUserId(invitationId,userId);
         UserLikeEntity userLikeEntity = new UserLikeEntity();
-        String key = invitationId+"_"+userId;
+        String key = String.valueOf(invitationId);
         RedisLock redisLock = new RedisLock(key);
         if(tenementInvitationEntity==null){
             throw new BusinessException("NO_INVITATION","帖子状态异常");

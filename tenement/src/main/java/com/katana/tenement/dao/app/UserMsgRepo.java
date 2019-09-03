@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface UserMsgRepo extends CrudRepository<UserMsgEntity, Integer>, JpaSpecificationExecutor<UserMsgEntity> {
 
-    @Query("select t from UserMsgEntity t where t.invitationId = :id")
+    @Query("select t from UserMsgEntity t where t.invitationId = :id and t.pid = 0")
     Page<UserMsgEntity> findByInvitationId(@Param("id") int id, Pageable pageable);
 
     @Query("select t from UserMsgEntity t where t.pid = :id")

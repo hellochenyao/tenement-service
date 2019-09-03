@@ -123,10 +123,27 @@ public class WebSocketServer {
     }
 
 
+    public static void sendInfoToAll(String type){
+        log.info("推送消息给所有人,推送内容："+type);
+        if(!StringUtils.isEmpty(type)||type!=null){
+            Iterator<Map.Entry<String,WebSocketServer>> wbIterator = websocketList.entrySet().iterator();
+            JSONObject response = new JSONObject();
+            response.put("code",type);
+            while(wbIterator.hasNext()){
+                Map.Entry<String,WebSocketServer> entry = wbIterator.next();
+                WebSocketServer webSocket = entry.getValue();
+                try {
+                    webSocket.sendMessage(JSONObject.toJSONString(response));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
     /**
      * 群发自定义消息
      * */
-    public static void sendInfo(int msgId,String type,Integer toUserid, Integer userId) {
+    public static void sendInfo(Integer msgId,String type,Integer toUserid, Integer userId) {
         log.info("推送消息到窗口"+userId+"，推送内容:"+type);
         String toUserId = String.valueOf(toUserid);
         String sendUserId = String.valueOf(userId);
@@ -143,7 +160,9 @@ public class WebSocketServer {
                     e.printStackTrace();
                 }
             }
-            response.put("id",msgId);
+            if(msgId!=null){//聊天的才有消息id
+                response.put("id",msgId);
+            }
             if(sendtx!=null){
                 try {
                     sendtx.sendMessage(JSONObject.toJSONString(response));

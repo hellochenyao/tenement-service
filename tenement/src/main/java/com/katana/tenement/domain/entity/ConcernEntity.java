@@ -3,20 +3,21 @@ package com.katana.tenement.domain.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-/**
- *好友关系
- */
+import java.time.LocalDateTime;
+
 @Entity
-@Table(name = "user_relation")
 @Data
-public class UserRelationEntity {
+@Table(name = "concern")
+public class ConcernEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private int userid;
 
-    private int friendId;
+    private int toUserid;//关注用户的
 
-    private int type;//0待验证 1已验证 -1已拉黑
+    private LocalDateTime createTime;
+
+    private LocalDateTime updateTime;
 }

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 
 /**
- *用户收藏实体
+ *评论实体
  */
 @Entity
 @Data
