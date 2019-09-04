@@ -21,6 +21,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ConcernServiceImpl implements ConcernService {
@@ -99,5 +100,10 @@ public class ConcernServiceImpl implements ConcernService {
             return 1;
         }
         return 0;
+    }
+
+    @Override
+    public List<ConcernEntity> findConcerns(int toUserid) {
+        return concernRepo.findByToUserid(toUserid);
     }
 }

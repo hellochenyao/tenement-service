@@ -19,4 +19,5 @@ public interface ConcernRepo extends JpaSpecificationExecutor<ConcernEntity> , C
     @Query("select count(t) from  ConcernEntity t where t.toUserid = :toUserid")
     Integer findAdmiresNums(@Param("toUserid") int toUserid);
 
+    List<ConcernEntity> findByToUserid(int toUserid);
 }

@@ -12,6 +12,8 @@ public class TenementInvitationFilterBo {
 
     private String title;
 
+    private int publisherId;
+
     //所在城市
     private String city;
 

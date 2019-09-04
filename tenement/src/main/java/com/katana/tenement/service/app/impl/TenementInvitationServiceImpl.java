@@ -4,9 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.katana.tenement.dao.app.TenementInvitationDao;
 import com.katana.tenement.dao.app.TenementInvitationRepo;
 import com.katana.tenement.dao.app.vo.tenementInvitation.TenementInvitationFilterVo;
+import com.katana.tenement.domain.entity.ConcernEntity;
 import com.katana.tenement.domain.entity.TenementInvitationEntity;
 import com.katana.tenement.domain.entity.UserMsgEntity;
 import com.katana.tenement.framework.dto.page.Page;
+import com.katana.tenement.framework.util.DateUtils;
+import com.katana.tenement.framework.websocket.WebSocketServer;
+import com.katana.tenement.service.app.ConcernService;
 import com.katana.tenement.service.app.TenementInvitationService;
 import com.katana.tenement.service.app.bo.tenementInvitation.TenementInvitationBo;
 import com.katana.tenement.service.app.bo.tenementInvitation.TenementInvitationFilterBo;
@@ -18,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.lang.System.out;
@@ -31,6 +36,10 @@ public class TenementInvitationServiceImpl implements TenementInvitationService 
 
     @Autowired
     private TenementInvitationDao tenementInvitationDao;
+
+
+    @Autowired
+    private ConcernService concernService;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -50,15 +59,19 @@ public class TenementInvitationServiceImpl implements TenementInvitationService 
     public void create(TenementInvitationBo tenementInvitationBo) {
         TenementInvitationEntity tenementInvitationEntity = new TenementInvitationEntity();
         BeanUtils.copyProperties(tenementInvitationBo, tenementInvitationEntity);
-        String httpAddr = "https://restapi.amap.com/v3/geocode/regeo?key={key}&location={location}";
-        Map<String,String> param = new HashMap<>();
-        param.put("location",tenementInvitationBo.getLocation());
-        param.put("key",amapKey);
-        String response = restTemplate.getForObject(httpAddr,String.class,param);
-        Object resObj = JSONObject.parseObject(response);
-        String city = ((JSONObject) resObj).getJSONObject("regeocode").getJSONObject("addressComponent").getString("city");
+//        String httpAddr = "https://restapi.amap.com/v3/geocode/regeo?key={key}&location={location}";
+//        Map<String,String> param = new HashMap<>();
+//        param.put("location",tenementInvitationBo.getLocation());
+//        param.put("key",amapKey);
+//        String response = restTemplate.getForObject(httpAddr,String.class,param);
+//        Object resObj = JSONObject.parseObject(response);
+//        String city = ((JSONObject) resObj).getJSONObject("regeocode").getJSONObject("addressComponent").getString("city");
         tenementInvitationEntity.setCity(tenementInvitationBo.getLocation().split(",")[0]);
-        tenementInvitationRepo.save(tenementInvitationEntity);
+        TenementInvitationEntity responseInvitation = tenementInvitationRepo.save(tenementInvitationEntity);
+        List<ConcernEntity> concernEntityList = concernService.findConcerns(tenementInvitationBo.getUserId());
+        concernEntityList.forEach(e->{
+            WebSocketServer.sendInfo(responseInvitation.getId(),"concernInvitation",e.getUserid(),-1);
+        });
     }
 
     @Override

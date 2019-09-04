@@ -53,6 +53,7 @@ public class InvitationBrowsingController {
     public ResponseTenementInvitationGet queryPublishedInvitation(RequestTenementInvitationGet request, @PathVariable("userId") Integer userId) {
         TenementInvitationFilterBo tenementInvitationFilterBo = new TenementInvitationFilterBo();
         BeanUtils.copyProperties(request, tenementInvitationFilterBo);
+
         Page<TenementInvitationEntity> page = tenementInvitationService.findInvitations(tenementInvitationFilterBo);
         ResponseTenementInvitationGet response = new ResponseTenementInvitationGet();
         List<ResponseTenementInvitationGet.TenementInvitation> list = new ArrayList<>();

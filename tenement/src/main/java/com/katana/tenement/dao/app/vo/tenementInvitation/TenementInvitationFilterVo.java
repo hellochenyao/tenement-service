@@ -10,6 +10,7 @@ public class TenementInvitationFilterVo {
     private Integer type;
 
     private String title;
+    private int publisherId;
 
     //所在城市
     private String city;

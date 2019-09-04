@@ -20,6 +20,9 @@ public class ResponseTenementInvitationGet {
         @ApiModelProperty("帖子标题")
         private String title;
 
+        @ApiModelProperty("用户id")
+        private int userId;
+
         @ApiModelProperty("帖子内容")
         private String content;
 

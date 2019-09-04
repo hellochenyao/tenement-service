@@ -63,15 +63,15 @@ public class AppInvitationOperateController {
 
     @ApiOperation("上传房源图片或视频 0图片 1视频")
     @RequestMapping(value = "/housing-resource/{fileType}/upload", method = RequestMethod.POST)
-    public ResponseHousingResourcePost upload(MultipartFile fileResource, @PathVariable("fileType") Integer fileType) {
-        String path = PathUtils.getJarPath() + File.separator + ConstantConfig.UPLOAD_DIRECTORY_NAME + File.separator + ConstantConfig.UPLOAD_HOUSING_DIRECTORY_NAME;
+    public ResponseHousingResourcePost upload(MultipartFile fileResource, @PathVariable("fileType") Integer fileType,@PathVariable("userId") int userId) {
+        String path = PathUtils.getJarPath() + File.separator + ConstantConfig.UPLOAD_DIRECTORY_NAME + File.separator + ConstantConfig.UPLOAD_HOUSING_DIRECTORY_NAME+File.separator+userId;
         File file = new File(path);
         if (!file.isDirectory()) {
             file.mkdirs();
         }
         String imgUrl = FileUploadUtils.upload(fileResource, path, fileType);
         ResponseHousingResourcePost response = new ResponseHousingResourcePost();
-        response.setResourceUrl(ConstantConfig.UPLOAD_HOUSING_DIRECTORY_NAME + File.separator + imgUrl);
+        response.setResourceUrl(ConstantConfig.UPLOAD_HOUSING_DIRECTORY_NAME +File.separator+userId + File.separator + imgUrl);
         return response;
     }
 

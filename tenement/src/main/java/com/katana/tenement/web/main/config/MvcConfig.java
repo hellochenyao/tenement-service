@@ -77,8 +77,8 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
      */
     @Bean
     public MultipartConfigElement multipartConfigElement(
-            @Value("${spring.http.multipart.max-file-size}") String maxFileSize,
-            @Value("${spring.http.multipart.max-request-size}") String maxRequestSize) {
+            @Value("${spring.servlet.multipart.max-file-size}") String maxFileSize,
+            @Value("${spring.servlet.multipart.max-request-size}") String maxRequestSize) {
         MultipartConfigFactory factory = new MultipartConfigFactory();
         // 单个文件最大
         factory.setMaxFileSize(maxFileSize);

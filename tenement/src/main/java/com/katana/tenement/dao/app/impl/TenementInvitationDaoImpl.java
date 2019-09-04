@@ -39,6 +39,12 @@ public class TenementInvitationDaoImpl implements TenementInvitationDao {
             sql.append(" and type = ? ");
             param.add(tenementInvitationFilterVo.getType());
         }
+
+        if(tenementInvitationFilterVo.getPublisherId()!=0){
+            sql.append(" and user_id = ? ");
+            param.add(tenementInvitationFilterVo.getPublisherId());
+        }
+
         if (tenementInvitationFilterVo.getAscending() != null && tenementInvitationFilterVo.getAscending() == 0) {
             sql.append(" order by update_time asc ");
         }

@@ -18,6 +18,9 @@ public class RequestTenementInvitationGet {
     @ApiModelProperty("所在城市")
     private String city;
 
+    @ApiModelProperty("发布人id")
+    private int publisherId;
+
     private Integer pageNo = 1;
 
     private Integer pageSize = 10;
