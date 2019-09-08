@@ -25,7 +25,7 @@ public class TenementInvitationBo {
     private LocalDateTime updateTime;
 
     //浏览次数
-    private Integer viewTimes;
+    private Integer viewTimes=0;
 
     //帖子类型（0 求租 1房源 2转租）
     private Integer type;
@@ -44,6 +44,7 @@ public class TenementInvitationBo {
 
     //预算
     private Double rental;
+    private String enterNums;
 
     //期望入住时间
     private LocalDate desiredDate;

@@ -84,8 +84,8 @@ public class InvitationBrowsingController {
 
 
     @ApiOperation("查看帖子详情 更新帖子浏览次数")
-    @RequestMapping(value = "/detail/{invitationId}", method = RequestMethod.POST)
-    public void detail(int invitationId,@PathVariable("userId") Integer userId) {
+    @RequestMapping(value = "/detail/{invitationId}", method = RequestMethod.PUT)
+    public void detail(@PathVariable("invitationId") int invitationId,@PathVariable("userId") Integer userId) {
         InvitationBrowsingBo invitationBrowsingBo = new InvitationBrowsingBo();
         invitationBrowsingBo.setUserId(userId);
         invitationBrowsingBo.setInvitationId(invitationId);
@@ -168,6 +168,21 @@ public class InvitationBrowsingController {
         response.setDetails(detailWordsList);
         response.setTotal(detailWordsList.size());
         return response;
+    }
+
+    @ApiOperation(value = "根据指定id获得帖子信息")
+    @RequestMapping(value = "/find/invitation/{id}",method = RequestMethod.GET)
+    public ResponseInvitationGet find(@PathVariable("id") int id){
+      TenementInvitationEntity tenementInvitationEntity = invitationBrowsingService.findByInvitation(id);
+      ResponseInvitationGet response = new ResponseInvitationGet();
+      BeanUtils.copyProperties(tenementInvitationEntity,response);
+      UserInfoVo userInfoVo = userInfoService.info(tenementInvitationEntity.getUserId());
+      response.setLastLoginTime(userInfoVo.getLastLoginTime());
+      response.setCreateTime(DateUtils.getLocalDateTimeStr(tenementInvitationEntity.getCreateTime()));
+      response.setUpdateTime(DateUtils.getLocalDateTimeStr(tenementInvitationEntity.getUpdateTime()));
+      response.setAvatar(userInfoVo.getAvatar());
+      response.setGender(userInfoVo.getGender());
+      return response;
     }
 
 }

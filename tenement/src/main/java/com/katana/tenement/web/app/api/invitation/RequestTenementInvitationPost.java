@@ -18,6 +18,9 @@ public class RequestTenementInvitationPost {
     @ApiModelProperty("预算")
     private Double rental;
 
+    @ApiModelProperty("入住人数")
+    private String enterNums;
+
     @ApiModelProperty("期望入住时间")
     private String desiredDate;
 
@@ -44,5 +47,6 @@ public class RequestTenementInvitationPost {
 
     @ApiModelProperty("出租类型（0 整租 1 短租 2合租）")
     private Integer roomRentType;
+
 
 }

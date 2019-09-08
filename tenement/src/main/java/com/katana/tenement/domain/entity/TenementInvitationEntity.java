@@ -73,6 +73,8 @@ public class TenementInvitationEntity {
     @Column(name = "rental")
     private double rental;
 
+    private String enterNums;
+
     //期望入住时间 日期
     @Column(name = "desired_date")
     private LocalDate desiredDate;
@@ -85,7 +87,7 @@ public class TenementInvitationEntity {
 
     //浏览次数
     @Column(name = "view_times")
-    private Integer viewTimes;
+    private Integer viewTimes=0;
 
     //状态
     @Column

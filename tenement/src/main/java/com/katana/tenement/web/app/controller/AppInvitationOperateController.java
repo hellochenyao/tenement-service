@@ -55,7 +55,9 @@ public class AppInvitationOperateController {
         tenementInvitationBo.setCreateTime(LocalDateTime.now());
         tenementInvitationBo.setUpdateTime(LocalDateTime.now());
         tenementInvitationBo.setUserId(userId);
-        tenementInvitationBo.setDesiredDate(DateUtils.getLocalDate(request.getDesiredDate(), "yyyy-MM-dd"));
+        if(request.getDesiredDate()!=null&&StringUtils.isNotEmpty(request.getDesiredDate())){
+            tenementInvitationBo.setDesiredDate(DateUtils.getLocalDate(request.getDesiredDate(), "yyyy-MM-dd"));
+        }
         tenementInvitationBo.setType(type);
         tenementInvitationService.create(tenementInvitationBo);
     }

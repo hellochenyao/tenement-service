@@ -2,6 +2,7 @@ package com.katana.tenement.service.app.impl;
 
 import com.katana.tenement.dao.app.*;
 import com.katana.tenement.domain.entity.*;
+import com.katana.tenement.framework.common.RedisLock;
 import com.katana.tenement.framework.dto.page.Page;
 import com.katana.tenement.framework.exception.BusinessException;
 import com.katana.tenement.service.app.InvitationBrowsingService;
@@ -40,6 +41,19 @@ public class InvitationBrowsingServiceImpl implements InvitationBrowsingService 
         UserBrowsingRecordEntity userBrowsingRecordEntity = new UserBrowsingRecordEntity();
         BeanUtils.copyProperties(invitationBrowsingBo,userBrowsingRecordEntity);
         userBrowsingRecordRepo.save(userBrowsingRecordEntity);
+        String invitationId = String.valueOf(invitationBrowsingBo.getInvitationId());
+        RedisLock lock = new RedisLock(invitationId);
+        lock.lock();
+        try {
+            TenementInvitationEntity tenementInvitationEntity= tenementInvitationRepo.findById(Integer.parseInt(invitationId)).orElse(null);
+            if(tenementInvitationEntity!=null){
+                tenementInvitationEntity.setViewTimes(tenementInvitationEntity.getViewTimes()+1);
+                tenementInvitationRepo.save(tenementInvitationEntity);
+            }
+        }finally {
+            lock.unlock();
+        }
+
     }
 
     @Override
@@ -91,5 +105,11 @@ public class InvitationBrowsingServiceImpl implements InvitationBrowsingService 
     public Integer findLeaveMsgNumsByInvitationId(int id) {
         List<UserMsgEntity> list = userMsgRepo.findByInvitationId(id);
         return list.size();
+    }
+
+    @Override
+    public TenementInvitationEntity findByInvitation(int id) {
+       TenementInvitationEntity tenementInvitationEntity =  tenementInvitationRepo.findById(id).orElse(null);
+       return tenementInvitationEntity;
     }
 }

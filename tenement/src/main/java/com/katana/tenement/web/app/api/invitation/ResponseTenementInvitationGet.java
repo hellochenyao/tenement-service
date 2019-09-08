@@ -35,6 +35,9 @@ public class ResponseTenementInvitationGet {
         @ApiModelProperty("预算")
         private Double rental;
 
+        @ApiModelProperty("入住人数")
+        private String enterNums;
+
         @ApiModelProperty("期望入住时间")
         private String desiredDate;
 

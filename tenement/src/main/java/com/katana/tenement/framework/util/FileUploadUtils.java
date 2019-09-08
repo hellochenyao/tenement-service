@@ -50,7 +50,7 @@ public class FileUploadUtils {
         Pattern p = null;
         try {
             String reg = "(mp4|flv|avi|rm|rmvb|wmv)";
-            p = Pattern.compile(reg);
+            p = Pattern.compile(reg,Pattern.CASE_INSENSITIVE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -61,7 +61,7 @@ public class FileUploadUtils {
         Pattern p = null;
         try {
             String reg = "wav|midi|cda|mp3|wmv";
-            p = Pattern.compile(reg);
+            p = Pattern.compile(reg,Pattern.CASE_INSENSITIVE);
         } catch (Exception e) {
             e.printStackTrace();
         }
