@@ -26,7 +26,7 @@ public class TenementInvitationDaoImpl implements TenementInvitationDao {
     public Page<TenementInvitationEntity> findInvitation(TenementInvitationFilterVo tenementInvitationFilterVo) {
         StringBuilder sql = new StringBuilder();
         List param = new ArrayList<>();
-        sql.append("select * from tenement_invitation_detail where 1=1 ");
+        sql.append("select SQL_CALC_FOUND_ROWS * from tenement_invitation_detail where 1=1 ");
         if (tenementInvitationFilterVo.getTitle() != null && StringUtils.isNotEmpty(tenementInvitationFilterVo.getTitle())) {
             sql.append(" and title like ? ");
             param.add("%" + tenementInvitationFilterVo.getTitle() + "%");
@@ -56,11 +56,13 @@ public class TenementInvitationDaoImpl implements TenementInvitationDao {
             param.add((tenementInvitationFilterVo.getPageNo() - 1) * tenementInvitationFilterVo.getPageSize());
             param.add(tenementInvitationFilterVo.getPageSize());
         }
+        final String totalSql = "SELECT FOUND_ROWS();";
         RowMapper<TenementInvitationEntity> rowMapper = new BeanPropertyRowMapper<>(TenementInvitationEntity.class);
         List<TenementInvitationEntity> listData = jdbcTemplate.query(sql.toString(), param.toArray(), rowMapper);
         Page<TenementInvitationEntity> page = new Page<>();
+        Integer total = jdbcTemplate.queryForObject(totalSql, Integer.class);
         page.setData(listData);
-        page.setTotal(listData.size());
+        page.setTotal(total);
         return page;
     }
 }

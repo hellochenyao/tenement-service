@@ -12,8 +12,11 @@ public class RequestTenementInvitationPost {
     @ApiModelProperty("帖子内容")
     private String content;
 
-    @ApiModelProperty("期望地点 经纬度 经度，维度")
+    @ApiModelProperty("期望地点")
     private String location;
+
+    @ApiModelProperty("房源经纬位置")
+    private String latitude;
 
     @ApiModelProperty("预算")
     private Double rental;

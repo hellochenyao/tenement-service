@@ -69,6 +69,9 @@ public class TenementInvitationEntity {
     @Column(name = "location")
     private String location;
 
+    //房源经纬位置
+    private String latitude;
+
     //租金
     @Column(name = "rental")
     private double rental;
