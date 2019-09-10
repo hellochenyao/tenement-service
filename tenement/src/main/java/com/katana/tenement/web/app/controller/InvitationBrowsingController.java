@@ -182,6 +182,10 @@ public class InvitationBrowsingController {
       response.setUpdateTime(DateUtils.getLocalDateTimeStr(tenementInvitationEntity.getUpdateTime()));
       response.setAvatar(userInfoVo.getAvatar());
       response.setGender(userInfoVo.getGender());
+        UserLikeBo userLikeBo = userLikeService.findUserLikeByInvitationIdAndUserId(tenementInvitationEntity.getId(),tenementInvitationEntity.getUserId());
+        if(userLikeBo!=null){
+            response.setStatus(userLikeBo.getStatus());
+        }
       return response;
     }
 
