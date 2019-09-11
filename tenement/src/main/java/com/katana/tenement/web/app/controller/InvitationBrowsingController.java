@@ -114,12 +114,15 @@ public class InvitationBrowsingController {
 
     @ApiOperation("帖子下方留言")
     @RequestMapping(value = "/leave/words/{invitationId}", method = RequestMethod.POST)
-    public void  leaveWords(@RequestBody RequestLeaveWordsPost request, @PathVariable int invitationId,@PathVariable("userId") Integer userId) {
+    public ResponseWordPost  leaveWords(@RequestBody RequestLeaveWordsPost request, @PathVariable int invitationId,@PathVariable("userId") Integer userId) {
         UserMsgBo userMsgBo = new UserMsgBo();
         userMsgBo.setUserId(userId);
         userMsgBo.setInvitationId(invitationId);
         BeanUtils.copyProperties(request,userMsgBo);
-        invitationBrowsingService.leaveWord(userMsgBo);
+        UserMsgEntity userMsg = invitationBrowsingService.leaveWord(userMsgBo);
+        ResponseWordPost response = new ResponseWordPost();
+        response.setMsgId(userMsg.getId());
+        return response;
     }
 
     @ApiOperation("根据id查找帖子的所有留言")
@@ -128,11 +131,13 @@ public class InvitationBrowsingController {
         UserMsgFilterBo userMsgFilterBo = new UserMsgFilterBo();
         UserResponseMsgFilterBo userResponseMsgFilterBo = new UserResponseMsgFilterBo();
         BeanUtils.copyProperties(request,userMsgFilterBo);
-        BeanUtils.copyProperties(request,userResponseMsgFilterBo);
         Page<UserMsgEntity> page = invitationBrowsingService.findLeaveWord(userMsgFilterBo);
         List<ResponseLeaveWordsGet.DetailWords> detailWordsList = new ArrayList<>();
         page.getData().forEach(e->{
             userResponseMsgFilterBo.setPid(e.getId());
+            userResponseMsgFilterBo.setInvitationId(e.getInvitationId());
+            userResponseMsgFilterBo.setPageNo(1);
+            userResponseMsgFilterBo.setPageSize(5);
             UserInfoVo userInfoVo = userInfoService.info(e.getUserId());
             Page<UserMsgEntity> responsePage = invitationBrowsingService.findResponseLeaveWords(userResponseMsgFilterBo);
             List<ResponseLeaveWordsGet.DetailWords.ResDetailWords> resDetailList = new ArrayList<>();
@@ -167,7 +172,7 @@ public class InvitationBrowsingController {
         });
         ResponseLeaveWordsGet response = new ResponseLeaveWordsGet();
         response.setDetails(detailWordsList);
-        response.setTotal(detailWordsList.size());
+        response.setTotal(page.getTotal());
         return response;
     }
 
@@ -180,4 +185,40 @@ public class InvitationBrowsingController {
       return response;
     }
 
+    @ApiOperation(value = "根据回复的id查找回复具体内容")
+    @RequestMapping(value = "/find/main/response/msg/{id}/content",method = RequestMethod.GET)
+    public ResponseUserMsgGet findMsg(@PathVariable("id") int msgId){
+        ResponseUserMsgGet response = new ResponseUserMsgGet();
+        UserMsgEntity userMsgEntity = invitationBrowsingService.getResponseMsgContent(msgId);
+        BeanUtils.copyProperties(userMsgEntity,response);
+        response.setCreateTime(DateUtils.getLocalDateTimeStr(userMsgEntity.getCreateTime()));
+        return response;
+    }
+    @ApiOperation(value = "根据pid找某个帖子留言的所有回复内容")
+    @RequestMapping(value = "/find/all/response/msg/{pid}",method = RequestMethod.GET)
+    public ResponseLeaveWordsToUserGet findResponseToUser(RequestWordsToUserFilterGet req,@PathVariable("pid") int pid){
+        UserResponseMsgFilterBo filterBo = new UserResponseMsgFilterBo();
+        BeanUtils.copyProperties(req,filterBo);
+        filterBo.setPid(pid);
+        filterBo.setInvitationId(req.getInvitationId());
+        Page<UserMsgEntity> responsePage = invitationBrowsingService.findResponseLeaveWords(filterBo);
+        ResponseLeaveWordsToUserGet response = new ResponseLeaveWordsToUserGet();
+        List<ResponseLeaveWordsToUserGet.Msgs> list = new ArrayList<>();
+        responsePage.getData().forEach(resEntity->{
+            ResponseLeaveWordsToUserGet.Msgs msgs = new ResponseLeaveWordsToUserGet.Msgs();
+            msgs.setAnswerUserId(resEntity.getAnswerUserId());
+            UserInfoVo user = userInfoService.info(resEntity.getUserId());
+            msgs.setAnswerUserNickname(resEntity.getAnswerUserNickname());
+            msgs.setNickname(resEntity.getNickname());
+            msgs.setAvatar(user.getAvatar());
+            msgs.setMsg(resEntity.getMsg());
+            msgs.setCreateTime(DateUtils.getLocalDateTimeStr(resEntity.getCreateTime()));
+            msgs.setGender(user.getGender());
+            msgs.setUserId(resEntity.getUserId());
+            list.add(msgs);
+        });
+        response.setData(list);
+        response.setTotal(responsePage.getTotal());
+        return response;
+    }
 }

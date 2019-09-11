@@ -70,7 +70,7 @@ public class InvitationBrowsingServiceImpl implements InvitationBrowsingService 
     }
 
     @Override
-    public void leaveWord(UserMsgBo userMsgBo) {
+    public UserMsgEntity leaveWord(UserMsgBo userMsgBo) {
         TenementInvitationEntity tenementInvitationEntity = tenementInvitationRepo.findById(userMsgBo.getInvitationId()).orElse(null);
         if(tenementInvitationEntity == null){
             throw new BusinessException("NO_INVITATION","该帖子不存在");
@@ -84,7 +84,7 @@ public class InvitationBrowsingServiceImpl implements InvitationBrowsingService 
         userMsgEntity.setNickname(userInfo.getNickName());
         userMsgEntity.setPid(userMsgBo.getAnswerMsgId());
         BeanUtils.copyProperties(userMsgBo,userMsgEntity);
-        userMsgRepo.save(userMsgEntity);
+        return userMsgRepo.save(userMsgEntity);
     }
 
     @Override
@@ -101,8 +101,8 @@ public class InvitationBrowsingServiceImpl implements InvitationBrowsingService 
     @Override
     public Page<UserMsgEntity> findResponseLeaveWords(UserResponseMsgFilterBo userResponseMsgFilterBo) {
         Sort sort = new Sort(Sort.Direction.ASC, "createTime");
-        org.springframework.data.domain.Page<UserMsgEntity> pageData = userMsgRepo.findByPid(userResponseMsgFilterBo.getPid(), PageRequest.of(userResponseMsgFilterBo.getPageNo()-1,userResponseMsgFilterBo.getPageSize(),sort));
-        int total = userMsgRepo.findMsgCountByPid(userResponseMsgFilterBo.getPid());
+        org.springframework.data.domain.Page<UserMsgEntity> pageData = userMsgRepo.findByPid(userResponseMsgFilterBo.getPid(),userResponseMsgFilterBo.getInvitationId(), PageRequest.of(userResponseMsgFilterBo.getPageNo()-1,userResponseMsgFilterBo.getPageSize(),sort));
+        int total = userMsgRepo.findMsgCountByPid(userResponseMsgFilterBo.getPid(),userResponseMsgFilterBo.getInvitationId());
         Page<UserMsgEntity> page = new Page<>();
         page.setTotal(total);
         page.setData(pageData.getContent());
@@ -127,5 +127,10 @@ public class InvitationBrowsingServiceImpl implements InvitationBrowsingService 
         invitationUserInfoBo.setUpdateTime(DateUtils.getLocalDateTimeStr(invitationUserInfoVo.getUpdateTime()));
         invitationUserInfoBo.setDesiredDate(DateUtils.getLocalDateTimeStr(invitationUserInfoVo.getDesiredDate()));
         return invitationUserInfoBo;
+    }
+
+    @Override
+    public UserMsgEntity getResponseMsgContent(int id) {
+        return userMsgRepo.findById(id).orElse(null);
     }
 }

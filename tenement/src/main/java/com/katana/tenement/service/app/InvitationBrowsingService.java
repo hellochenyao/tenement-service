@@ -12,7 +12,7 @@ public interface InvitationBrowsingService {
 
     void collectInvitation(UserCollectionBo userCollectionBo);
 
-    void leaveWord(UserMsgBo userMsgBo);
+    UserMsgEntity leaveWord(UserMsgBo userMsgBo);
 
     Page<UserMsgEntity> findLeaveWord(UserMsgFilterBo userMsgFilterBo);
 
@@ -21,4 +21,6 @@ public interface InvitationBrowsingService {
     Integer findLeaveMsgNumsByInvitationId(int id);
 
     InvitationUserInfoBo findByInvitation(int id);
+
+    UserMsgEntity getResponseMsgContent(int id);
 }

@@ -18,11 +18,12 @@ public interface UserMsgRepo extends CrudRepository<UserMsgEntity, Integer>, Jpa
     @Query("select count(t) from UserMsgEntity t where t.invitationId = :id and t.pid = 0")
     int findMsgCountByInvitationId(@Param("id") int id);
 
-    @Query("select t from UserMsgEntity t where t.pid = :id")
-    Page<UserMsgEntity> findByPid(@Param("id") int id, Pageable pageable);
+    @Query("select t from UserMsgEntity t where t.pid = :id and t.invitationId = :invitationId")
+    Page<UserMsgEntity> findByPid(@Param("id") int id,@Param("invitationId") int invitationId, Pageable pageable);
 
-    @Query("select count(t) from UserMsgEntity t where t.pid = :id")
-    int findMsgCountByPid(@Param("id") int id);
+    @Query("select count(t) from UserMsgEntity t where t.pid = :id and t.invitationId = :invitationId")
+    int findMsgCountByPid(@Param("id") int id,@Param("invitationId") int invitationId);
 
     List<UserMsgEntity> findByInvitationId(int invitationId);
+
 }
