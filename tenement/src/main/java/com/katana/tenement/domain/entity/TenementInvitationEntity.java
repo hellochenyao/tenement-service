@@ -52,11 +52,13 @@ public class TenementInvitationEntity {
     @Column(name = "house_layout")
     private String houseLayOut;
 
-    //出租类型（0 整租 1 短租 2合租）
+    //出租类型（0 整租 1 主卧 2次卧 3床位）
     @Column(name = "room_rent_type")
     private Integer roomRentType;
 
     //------------------------帖子一些公共信息---------------------------
+    private String remark;
+
     //房源图片
     @Column(name = "housing_imgs")
     private String housingImgs;

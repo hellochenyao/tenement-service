@@ -1,12 +1,15 @@
 package com.katana.tenement.service.app.impl;
 
 import com.katana.tenement.dao.app.*;
+import com.katana.tenement.dao.app.vo.tenementInvitation.InvitationUserInfoVo;
 import com.katana.tenement.domain.entity.*;
 import com.katana.tenement.framework.common.RedisLock;
 import com.katana.tenement.framework.dto.page.Page;
 import com.katana.tenement.framework.exception.BusinessException;
+import com.katana.tenement.framework.util.DateUtils;
 import com.katana.tenement.service.app.InvitationBrowsingService;
 import com.katana.tenement.service.app.bo.invitationBrowsing.*;
+import com.katana.tenement.service.app.bo.tenementInvitation.InvitationUserInfoBo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +38,9 @@ public class InvitationBrowsingServiceImpl implements InvitationBrowsingService 
 
     @Autowired
     private UserMsgRepo userMsgRepo;
+
+    @Autowired
+    private TenementInvitationDao tenementInvitationDao;
 
     @Override
     public void viewDetail(InvitationBrowsingBo invitationBrowsingBo) {
@@ -85,8 +91,9 @@ public class InvitationBrowsingServiceImpl implements InvitationBrowsingService 
     public Page<UserMsgEntity> findLeaveWord(UserMsgFilterBo userMsgFilterBo) {
         Sort sort = new Sort(Sort.Direction.ASC, "createTime");
         org.springframework.data.domain.Page<UserMsgEntity> pageData = userMsgRepo.findByInvitationId(userMsgFilterBo.getInvitationId(), PageRequest.of(userMsgFilterBo.getPageNo()-1,userMsgFilterBo.getPageSize(),sort));
+        int total = userMsgRepo.findMsgCountByInvitationId(userMsgFilterBo.getInvitationId());
         Page<UserMsgEntity> page = new Page<>();
-        page.setTotal(pageData.getContent().size());
+        page.setTotal(total);
         page.setData(pageData.getContent());
         return page;
     }
@@ -95,8 +102,9 @@ public class InvitationBrowsingServiceImpl implements InvitationBrowsingService 
     public Page<UserMsgEntity> findResponseLeaveWords(UserResponseMsgFilterBo userResponseMsgFilterBo) {
         Sort sort = new Sort(Sort.Direction.ASC, "createTime");
         org.springframework.data.domain.Page<UserMsgEntity> pageData = userMsgRepo.findByPid(userResponseMsgFilterBo.getPid(), PageRequest.of(userResponseMsgFilterBo.getPageNo()-1,userResponseMsgFilterBo.getPageSize(),sort));
+        int total = userMsgRepo.findMsgCountByPid(userResponseMsgFilterBo.getPid());
         Page<UserMsgEntity> page = new Page<>();
-        page.setTotal(pageData.getContent().size());
+        page.setTotal(total);
         page.setData(pageData.getContent());
         return page;
     }
@@ -108,8 +116,16 @@ public class InvitationBrowsingServiceImpl implements InvitationBrowsingService 
     }
 
     @Override
-    public TenementInvitationEntity findByInvitation(int id) {
-       TenementInvitationEntity tenementInvitationEntity =  tenementInvitationRepo.findById(id).orElse(null);
-       return tenementInvitationEntity;
+    public InvitationUserInfoBo findByInvitation(int id) {
+        if(id==0){
+            throw new BusinessException("PARAM_ERROR","参数不可为空！");
+        }
+        InvitationUserInfoVo invitationUserInfoVo = tenementInvitationDao.queryInvitationUserInfo(id);
+        InvitationUserInfoBo invitationUserInfoBo = new InvitationUserInfoBo();
+        BeanUtils.copyProperties(invitationUserInfoVo,invitationUserInfoBo);
+        invitationUserInfoBo.setCreateTime(DateUtils.getLocalDateTimeStr(invitationUserInfoVo.getCreateTime()));
+        invitationUserInfoBo.setUpdateTime(DateUtils.getLocalDateTimeStr(invitationUserInfoVo.getUpdateTime()));
+        invitationUserInfoBo.setDesiredDate(DateUtils.getLocalDateTimeStr(invitationUserInfoVo.getDesiredDate()));
+        return invitationUserInfoBo;
     }
 }

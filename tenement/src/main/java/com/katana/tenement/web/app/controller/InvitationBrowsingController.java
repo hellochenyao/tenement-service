@@ -12,6 +12,7 @@ import com.katana.tenement.service.app.UserInfoService;
 import com.katana.tenement.service.app.UserLikeService;
 import com.katana.tenement.service.app.bo.UserLike.UserLikeBo;
 import com.katana.tenement.service.app.bo.invitationBrowsing.*;
+import com.katana.tenement.service.app.bo.tenementInvitation.InvitationUserInfoBo;
 import com.katana.tenement.service.app.bo.tenementInvitation.TenementInvitationFilterBo;
 import com.katana.tenement.web.app.api.invitation.*;
 import io.swagger.annotations.Api;
@@ -173,19 +174,9 @@ public class InvitationBrowsingController {
     @ApiOperation(value = "根据指定id获得帖子信息")
     @RequestMapping(value = "/find/invitation/{id}",method = RequestMethod.GET)
     public ResponseInvitationGet find(@PathVariable("id") int id){
-      TenementInvitationEntity tenementInvitationEntity = invitationBrowsingService.findByInvitation(id);
+      InvitationUserInfoBo invitationUserInfoBo = invitationBrowsingService.findByInvitation(id);
       ResponseInvitationGet response = new ResponseInvitationGet();
-      BeanUtils.copyProperties(tenementInvitationEntity,response);
-      UserInfoVo userInfoVo = userInfoService.info(tenementInvitationEntity.getUserId());
-      response.setLastLoginTime(userInfoVo.getLastLoginTime());
-      response.setCreateTime(DateUtils.getLocalDateTimeStr(tenementInvitationEntity.getCreateTime()));
-      response.setUpdateTime(DateUtils.getLocalDateTimeStr(tenementInvitationEntity.getUpdateTime()));
-      response.setAvatar(userInfoVo.getAvatar());
-      response.setGender(userInfoVo.getGender());
-        UserLikeBo userLikeBo = userLikeService.findUserLikeByInvitationIdAndUserId(tenementInvitationEntity.getId(),tenementInvitationEntity.getUserId());
-        if(userLikeBo!=null){
-            response.setStatus(userLikeBo.getStatus());
-        }
+      BeanUtils.copyProperties(invitationUserInfoBo,response);
       return response;
     }
 

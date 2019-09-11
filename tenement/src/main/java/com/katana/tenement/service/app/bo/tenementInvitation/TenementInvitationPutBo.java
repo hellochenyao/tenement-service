@@ -21,6 +21,8 @@ public class TenementInvitationPutBo {
 
     private String houseLayOut;
 
+    private String remark;
+
     private String housingImgs;
 
     private String housingVideos;

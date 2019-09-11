@@ -39,6 +39,8 @@ public class RequestTenementInvitationPost {
     @ApiModelProperty("是否显示个人信息 （0显示 1不显示）")
     private int showPersonalInfo;
 
+    private String remark;
+
     @ApiModelProperty("房源图片")
     private String housingImgs;
 

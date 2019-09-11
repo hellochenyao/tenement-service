@@ -4,6 +4,7 @@ import com.katana.tenement.domain.entity.TenementInvitationEntity;
 import com.katana.tenement.domain.entity.UserMsgEntity;
 import com.katana.tenement.framework.dto.page.Page;
 import com.katana.tenement.service.app.bo.invitationBrowsing.*;
+import com.katana.tenement.service.app.bo.tenementInvitation.InvitationUserInfoBo;
 
 public interface InvitationBrowsingService {
 
@@ -19,5 +20,5 @@ public interface InvitationBrowsingService {
 
     Integer findLeaveMsgNumsByInvitationId(int id);
 
-    TenementInvitationEntity findByInvitation(int id);
+    InvitationUserInfoBo findByInvitation(int id);
 }

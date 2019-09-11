@@ -1,17 +1,16 @@
 package com.katana.tenement.dao.app.impl;
 
 import com.katana.tenement.dao.app.TenementInvitationDao;
+import com.katana.tenement.dao.app.vo.tenementInvitation.InvitationUserInfoVo;
 import com.katana.tenement.dao.app.vo.tenementInvitation.TenementInvitationFilterVo;
 import com.katana.tenement.domain.entity.TenementInvitationEntity;
 import com.katana.tenement.framework.dto.page.Page;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,5 +63,19 @@ public class TenementInvitationDaoImpl implements TenementInvitationDao {
         page.setData(listData);
         page.setTotal(total);
         return page;
+    }
+
+    @Override
+    public InvitationUserInfoVo queryInvitationUserInfo(int id) {
+        StringBuilder sql = new StringBuilder();
+        List<Object> params = new ArrayList<>();
+        sql.append("select  temp1.* , temp2.we_chat,temp2.school,temp2.grade,temp2.last_login_time,temp2.avatar,temp2.gender , temp3.status from tenement_invitation_detail temp1 left JOIN user_info\n" +
+                " temp2 on temp1.user_id = temp2.id left JOIN user_like \n" +
+                "temp3 on temp1.user_id = temp3.like_user_id and temp1.id=temp3.like_invitation_id \n" +
+                "where temp1.id=?");
+        params.add(id);
+        RowMapper<InvitationUserInfoVo> rowMapper = new BeanPropertyRowMapper<>(InvitationUserInfoVo.class);
+
+        return jdbcTemplate.queryForObject(sql.toString(),params.toArray(),rowMapper);
     }
 }

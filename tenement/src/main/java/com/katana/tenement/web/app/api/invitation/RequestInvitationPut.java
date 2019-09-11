@@ -24,6 +24,8 @@ public class RequestInvitationPut {
     @ApiModelProperty("户型")
     private String houseLayOut;
 
+    private String remark;
+
     @ApiModelProperty("房源图片")
     private String housingImgs;
 

@@ -56,13 +56,12 @@ public class ResponseTenementInvitationGet {
         private String weChat;
 
         @ApiModelProperty("发布人学校名字")
-        private String schoolName;
+        private String school;
 
         @ApiModelProperty("发布人年级")
         private String grade;
 
-        @ApiModelProperty("发布人学位")
-        private String specialities;
+        private String remark;
 
         @ApiModelProperty("房源图片")
         private String housingImgs;

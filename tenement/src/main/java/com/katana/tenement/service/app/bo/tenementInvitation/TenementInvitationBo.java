@@ -61,6 +61,8 @@ public class TenementInvitationBo {
     //是否显示个人信息
     private int showPersonalInfo;
 
+    private String remark;
+
     //房源图片
     private String housingImgs;
 
