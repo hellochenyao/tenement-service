@@ -44,6 +44,11 @@ public class TenementInvitationDaoImpl implements TenementInvitationDao {
             param.add(tenementInvitationFilterVo.getPublisherId());
         }
 
+        if(tenementInvitationFilterVo.getDetailLocation()!=null&&StringUtils.isNotEmpty(tenementInvitationFilterVo.getDetailLocation())){
+            sql.append(" and detail_location like ? ");
+            param.add("%"+tenementInvitationFilterVo.getDetailLocation()+"%");
+        }
+
         if (tenementInvitationFilterVo.getAscending() != null && tenementInvitationFilterVo.getAscending() == 0) {
             sql.append(" order by update_time asc ");
         }

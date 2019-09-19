@@ -15,6 +15,7 @@ import com.katana.tenement.service.app.TenementInvitationService;
 import com.katana.tenement.service.app.bo.tenementInvitation.TenementInvitationBo;
 import com.katana.tenement.service.app.bo.tenementInvitation.TenementInvitationFilterBo;
 import com.katana.tenement.service.app.bo.tenementInvitation.TenementInvitationPutBo;
+import okhttp3.OkHttpClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,8 +45,9 @@ public class TenementInvitationServiceImpl implements TenementInvitationService 
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${amap.key}")
+    @Value("${qqmap.key}")
     private String amapKey;
+
 
     @Override
     public Page<TenementInvitationEntity> findInvitations(TenementInvitationFilterBo tenementInvitationFilterBo) {

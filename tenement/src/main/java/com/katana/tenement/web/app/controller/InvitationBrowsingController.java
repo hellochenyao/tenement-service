@@ -17,6 +17,7 @@ import com.katana.tenement.service.app.bo.tenementInvitation.TenementInvitationF
 import com.katana.tenement.web.app.api.invitation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import okhttp3.OkHttpClient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

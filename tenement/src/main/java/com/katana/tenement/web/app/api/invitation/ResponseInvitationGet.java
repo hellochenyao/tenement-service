@@ -23,7 +23,7 @@ public class ResponseInvitationGet {
     @ApiModelProperty("期望地点")
     private String location;
 
-    private String latitude;
+    private String detailLocation;
 
     @ApiModelProperty("预算")
     private Double rental;

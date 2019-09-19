@@ -16,7 +16,7 @@ public class InvitationUserInfoBo {
 
     private String location;
 
-    private String latitude;
+    private String detailLocation;
 
     private Double rental;
 
