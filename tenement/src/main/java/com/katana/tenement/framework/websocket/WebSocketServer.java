@@ -140,6 +140,17 @@ public class WebSocketServer {
             }
         }
     }
+    public static void sendMessage(String content,int toUserid){
+        String toUseridStr = String.valueOf(toUserid);
+        WebSocketServer receiveServer = websocketList.get(toUseridStr);
+        if(receiveServer!=null){
+            try {
+                receiveServer.sendMessage(content);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     /**
      * 群发自定义消息
      * */

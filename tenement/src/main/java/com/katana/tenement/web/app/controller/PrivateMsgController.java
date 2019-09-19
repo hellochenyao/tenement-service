@@ -1,5 +1,6 @@
 package com.katana.tenement.web.app.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.katana.tenement.dao.app.vo.privateMsg.PrivateMsgUserReceiveFilterVo;
 import com.katana.tenement.dao.app.vo.userinfo.UserInfoVo;
 import com.katana.tenement.domain.emuns.MessageTypeEnum;
@@ -144,6 +145,12 @@ public class PrivateMsgController {
         privateMsgBo.setContent(request.getContent());
         privateMsgBo.setIsRead(-1);
         privateMsgBo.setType(type);
+        PrivateMsgWSDto privateMsgWSDto =new PrivateMsgWSDto();
+        BeanUtils.copyProperties(privateMsgBo,privateMsgWSDto);
+        privateMsgWSDto.setCreateTime(DateUtils.getLocalDateTimeStr(privateMsgBo.getCreateTime()));
+        UserInfoVo userInfo = userInfoService.info(userId);
+        privateMsgWSDto.setReceiveName(userInfo.getNickName());
+        privateMsgWSDto.setReceiveAvatar(userInfo.getAvatar());
         try{
             privateMsgService.saveMsg(privateMsgBo);
         }catch (Exception e){
@@ -152,7 +159,9 @@ public class PrivateMsgController {
             WebSocketServer.sendInfo(request.getMsgId(),"error",-1,userId);
             throw new BusinessException("SEND_ERROR","消息发送失败");
         }
-        WebSocketServer.sendInfo(request.getMsgId(),"newMsg",request.getReceiveUserid(),-1);
+        JSONObject postObject = new JSONObject();
+        postObject.put("newMsg",JSONObject.toJSONString(privateMsgWSDto));
+        WebSocketServer.sendMessage(JSONObject.toJSONString(postObject),request.getReceiveUserid());
         WebSocketServer.sendInfo(request.getMsgId(),"success",-1,userId);
     }
 
