@@ -42,6 +42,9 @@ public class UserMsgEntity {
     @Column
     private int invitationId;
 
+    //弹幕时间
+    private int time;
+
     //留言时间
     @Column
     private LocalDateTime createTime;

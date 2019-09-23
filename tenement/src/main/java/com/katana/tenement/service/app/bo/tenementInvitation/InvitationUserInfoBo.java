@@ -14,9 +14,11 @@ public class InvitationUserInfoBo {
 
     private String publisher;
 
+    private Integer type;
+
     private String location;
 
-    private String detailLocation;
+    private String latitude;
 
     private Double rental;
 

@@ -15,8 +15,8 @@ public class RequestTenementInvitationPost {
     @ApiModelProperty("期望地点")
     private String location;
 
-    @ApiModelProperty("房源具体位置")
-    private String detailLocation;
+    @ApiModelProperty("房源具体位置(经纬度）")
+    private String latitude;
 
     @ApiModelProperty("预算")
     private Double rental;
@@ -53,5 +53,5 @@ public class RequestTenementInvitationPost {
     @ApiModelProperty("出租类型（0 整租 1 短租 2合租）")
     private Integer roomRentType;
 
-
+    private String city;
 }

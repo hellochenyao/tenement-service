@@ -15,6 +15,8 @@ public class UserMsgBo {
 
     private String msg;
 
+    private int time;
+
     private int  answerMsgId;
 
     private int responseUserId;

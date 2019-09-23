@@ -126,7 +126,7 @@ public class InvitationBrowsingController {
         return response;
     }
 
-    @ApiOperation("根据id查找帖子的所有留言")
+    @ApiOperation("根据id按页数查找帖子的所有留言")
     @RequestMapping(value="/leave/words-items",method = RequestMethod.GET)
     public ResponseLeaveWordsGet findLeaveWord(RequestLeaveWordsFilterGet request){
         UserMsgFilterBo userMsgFilterBo = new UserMsgFilterBo();
@@ -220,6 +220,21 @@ public class InvitationBrowsingController {
         });
         response.setData(list);
         response.setTotal(responsePage.getTotal());
+        return response;
+    }
+
+    @ApiOperation(value = "根据帖子id查找所有留言")
+    @RequestMapping(value = "/find/all/usermsg/{invitationid}",method = RequestMethod.GET)
+    public ResponseAllLeaveWordsGet findAllMsg(@PathVariable("invitationid") int invitationid){
+        List<UserMsgEntity> data = invitationBrowsingService.findAllUserMsgs(invitationid);
+        ResponseAllLeaveWordsGet response = new ResponseAllLeaveWordsGet();
+        List<ResponseAllLeaveWordsGet.Msg> list = new ArrayList<>();
+        data.forEach(e->{
+            ResponseAllLeaveWordsGet.Msg msg = new ResponseAllLeaveWordsGet.Msg();
+            BeanUtils.copyProperties(e,msg);
+            list.add(msg);
+        });
+        response.setData(list);
         return response;
     }
 }

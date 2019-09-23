@@ -133,4 +133,9 @@ public class InvitationBrowsingServiceImpl implements InvitationBrowsingService 
     public UserMsgEntity getResponseMsgContent(int id) {
         return userMsgRepo.findById(id).orElse(null);
     }
+
+    @Override
+    public List<UserMsgEntity> findAllUserMsgs(int invitationId) {
+        return userMsgRepo.findByInvitationId(invitationId);
+    }
 }

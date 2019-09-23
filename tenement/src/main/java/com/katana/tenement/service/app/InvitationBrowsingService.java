@@ -6,6 +6,8 @@ import com.katana.tenement.framework.dto.page.Page;
 import com.katana.tenement.service.app.bo.invitationBrowsing.*;
 import com.katana.tenement.service.app.bo.tenementInvitation.InvitationUserInfoBo;
 
+import java.util.List;
+
 public interface InvitationBrowsingService {
 
     void viewDetail(InvitationBrowsingBo invitationBrowsingBo);
@@ -23,4 +25,6 @@ public interface InvitationBrowsingService {
     InvitationUserInfoBo findByInvitation(int id);
 
     UserMsgEntity getResponseMsgContent(int id);
+
+    List<UserMsgEntity> findAllUserMsgs(int invitationId);
 }

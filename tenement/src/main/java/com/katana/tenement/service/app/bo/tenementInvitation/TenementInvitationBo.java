@@ -43,7 +43,7 @@ public class TenementInvitationBo {
     private String location;
 
     //房源具体位置
-    private String detailLocation;
+    private String latitude;
 
     //预算
     private Double rental;

@@ -68,7 +68,6 @@ public class TenementInvitationServiceImpl implements TenementInvitationService 
 //        String response = restTemplate.getForObject(httpAddr,String.class,param);
 //        Object resObj = JSONObject.parseObject(response);
 //        String city = ((JSONObject) resObj).getJSONObject("regeocode").getJSONObject("addressComponent").getString("city");
-        tenementInvitationEntity.setCity(tenementInvitationBo.getLocation().split(",")[0]);
         TenementInvitationEntity responseInvitation = tenementInvitationRepo.save(tenementInvitationEntity);
         List<ConcernEntity> concernEntityList = concernService.findConcerns(tenementInvitationBo.getUserId());
         concernEntityList.forEach(e->{

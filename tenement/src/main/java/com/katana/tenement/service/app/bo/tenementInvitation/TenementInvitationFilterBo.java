@@ -17,7 +17,7 @@ public class TenementInvitationFilterBo {
     //所在城市
     private String city;
 
-    private String detailLocation;
+    private String location;
 
     private Integer pageNo;
 
