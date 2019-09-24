@@ -1,5 +1,6 @@
 package com.katana.tenement.web.app.controller;
 
+import com.katana.tenement.dao.app.vo.tenementInvitation.InvitationUserInfoVo;
 import com.katana.tenement.dao.app.vo.userinfo.UserInfoVo;
 import com.katana.tenement.domain.entity.TenementInvitationEntity;
 import com.katana.tenement.domain.entity.UserLikeEntity;
@@ -14,7 +15,9 @@ import com.katana.tenement.service.app.bo.UserLike.UserLikeBo;
 import com.katana.tenement.service.app.bo.invitationBrowsing.*;
 import com.katana.tenement.service.app.bo.tenementInvitation.InvitationUserInfoBo;
 import com.katana.tenement.service.app.bo.tenementInvitation.TenementInvitationFilterBo;
+import com.katana.tenement.service.app.bo.userBrowsing.UserBrowsingFilterBo;
 import com.katana.tenement.web.app.api.invitation.*;
+import com.katana.tenement.web.app.api.userBrowsing.RequestUserBrowsingFilterGet;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import okhttp3.OkHttpClient;
@@ -235,6 +238,34 @@ public class InvitationBrowsingController {
             list.add(msg);
         });
         response.setData(list);
+        return response;
+    }
+
+    @ApiOperation(value = "增加浏览记录")
+    @RequestMapping(value = "/add/browsing/record/{invitationid}",method = RequestMethod.POST)
+    public void addBrowsingRecord(@PathVariable int userId ,@PathVariable int invitationid){
+        invitationBrowsingService.addBrowsingRecord(userId,invitationid);
+    }
+
+    @ApiOperation(value = "分页查询用户的浏览记录")
+    @RequestMapping(value = "/query/browsing/records",method = RequestMethod.GET)
+    public ResponseTenementInvitationGet queryUserBrowsingRecords(RequestUserBrowsingFilterGet request){
+        UserBrowsingFilterBo filterBo = new UserBrowsingFilterBo();
+        BeanUtils.copyProperties(request,filterBo);
+        ResponseTenementInvitationGet response = new ResponseTenementInvitationGet();
+        Page<InvitationUserInfoVo> page = invitationBrowsingService.findBrowsingInvitation(filterBo);
+        List<ResponseTenementInvitationGet.TenementInvitation> list = new ArrayList<>();
+        page.getData().forEach(e->{
+            ResponseTenementInvitationGet.TenementInvitation tenementInvitation = new ResponseTenementInvitationGet.TenementInvitation();
+            BeanUtils.copyProperties(e,tenementInvitation);
+            tenementInvitation.setCreateTime(DateUtils.getLocalDateTimeStr(e.getCreateTime()));
+            tenementInvitation.setUpdateTime(DateUtils.getLocalDateTimeStr(e.getUpdateTime()));
+            tenementInvitation.setDesiredDate(DateUtils.getLocalDateTimeStr(e.getDesiredDate()));
+            tenementInvitation.setLastLoginTime(DateUtils.getLocalDateTimeStr(e.getLastLoginTime()));
+            list.add(tenementInvitation);
+        });
+        response.setData(list);
+        response.setTotal(page.getTotal());
         return response;
     }
 }

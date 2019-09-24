@@ -61,6 +61,7 @@ public class TenementInvitationServiceImpl implements TenementInvitationService 
     public void create(TenementInvitationBo tenementInvitationBo) {
         TenementInvitationEntity tenementInvitationEntity = new TenementInvitationEntity();
         BeanUtils.copyProperties(tenementInvitationBo, tenementInvitationEntity);
+        tenementInvitationEntity.setStatus(1);
 //        String httpAddr = "https://restapi.amap.com/v3/geocode/regeo?key={key}&location={location}";
 //        Map<String,String> param = new HashMap<>();
 //        param.put("location",tenementInvitationBo.getLocation());

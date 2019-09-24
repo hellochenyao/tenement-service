@@ -2,6 +2,7 @@ package com.katana.tenement.service.app.impl;
 
 import com.katana.tenement.dao.app.*;
 import com.katana.tenement.dao.app.vo.tenementInvitation.InvitationUserInfoVo;
+import com.katana.tenement.dao.app.vo.userBrowsing.UserBrowsingFilterVo;
 import com.katana.tenement.domain.entity.*;
 import com.katana.tenement.framework.common.RedisLock;
 import com.katana.tenement.framework.dto.page.Page;
@@ -10,6 +11,7 @@ import com.katana.tenement.framework.util.DateUtils;
 import com.katana.tenement.service.app.InvitationBrowsingService;
 import com.katana.tenement.service.app.bo.invitationBrowsing.*;
 import com.katana.tenement.service.app.bo.tenementInvitation.InvitationUserInfoBo;
+import com.katana.tenement.service.app.bo.userBrowsing.UserBrowsingFilterBo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -41,6 +43,9 @@ public class InvitationBrowsingServiceImpl implements InvitationBrowsingService 
 
     @Autowired
     private TenementInvitationDao tenementInvitationDao;
+
+    @Autowired
+    private UserBrowsingRecordDao userBrowsingRecordDao;
 
     @Override
     public void viewDetail(InvitationBrowsingBo invitationBrowsingBo) {
@@ -137,5 +142,22 @@ public class InvitationBrowsingServiceImpl implements InvitationBrowsingService 
     @Override
     public List<UserMsgEntity> findAllUserMsgs(int invitationId) {
         return userMsgRepo.findByInvitationId(invitationId);
+    }
+
+    @Override
+    public void addBrowsingRecord(int userId, int invitationId) {
+        UserBrowsingRecordEntity userBrowsing = new UserBrowsingRecordEntity();
+        userBrowsing.setUserId(userId);
+        userBrowsing.setInvitationId(invitationId);
+        userBrowsing.setBrowsingTime(LocalDateTime.now());
+        userBrowsingRecordRepo.save(userBrowsing);
+    }
+
+    @Override
+    public Page<InvitationUserInfoVo> findBrowsingInvitation(UserBrowsingFilterBo filterBo) {
+        UserBrowsingFilterVo filterVo = new UserBrowsingFilterVo();
+        BeanUtils.copyProperties(filterBo,filterVo);
+        Page<InvitationUserInfoVo> page =  userBrowsingRecordDao.findBrowsingRecords(filterVo);
+        return page;
     }
 }
