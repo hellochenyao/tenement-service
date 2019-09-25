@@ -44,6 +44,7 @@ public class UserConnection {
     private static String AUTH_TOKEN_PATH = "https://api.weixin.qq.com/sns/oauth2/access_token";
     //刷新access_token
     private static String REFRESH_TOKEN_PATH = "https://api.weixin.qq.com/sns/oauth2/refresh_token";
+    private static String ACCESS_TOKEN = "https://api.weixin.qq.com/cgi-bin/token";
     //拉取用户信息(需scope为 snsapi_userinfo)
     private static String SNSAPI_USER_PATH = "https://api.weixin.qq.com/sns/userinfo";
     //检验授权凭证（access_token）是否有效
@@ -387,5 +388,14 @@ public class UserConnection {
         }
         result.setMsg(jsonResult);
         return result;
+    }
+    public static String getAccessToken(String appid, String secret){
+        Connection connection = new Connection();
+        Map<String, String> params = new TreeMap<String, String>();
+        params.put("appid", appid);
+        params.put("secret", secret);
+        params.put("grant_type", "client_credential");
+        String token = connection.HttpsDefaultExecute("GET", ACCESS_TOKEN, params, "");
+        return token;
     }
 }
