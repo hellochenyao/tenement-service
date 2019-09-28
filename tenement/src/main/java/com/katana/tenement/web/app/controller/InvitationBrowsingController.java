@@ -98,17 +98,6 @@ public class InvitationBrowsingController {
         invitationBrowsingService.viewDetail(invitationBrowsingBo);
     }
 
-    @ApiOperation("收藏帖子")
-    @RequestMapping(value = "/collect/{invitationId}", method = RequestMethod.POST)
-    public void collect(int invitationId,@PathVariable("userId") Integer userId) {
-        UserCollectionBo userCollectionBo = new UserCollectionBo();
-        userCollectionBo.setUserId(userId);
-        userCollectionBo.setInvitationId(invitationId);
-        userCollectionBo.setCollectTime(LocalDateTime.now());
-        invitationBrowsingService.collectInvitation(userCollectionBo);
-    }
-
-
     @ApiOperation("举报帖子")
     @RequestMapping(value = "/tip-offs/{invitationId}", method = RequestMethod.POST)
     public void  tipOffs(int invitationId) {

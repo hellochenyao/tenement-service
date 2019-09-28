@@ -15,8 +15,6 @@ public interface InvitationBrowsingService {
 
     void viewDetail(InvitationBrowsingBo invitationBrowsingBo);
 
-    void collectInvitation(UserCollectionBo userCollectionBo);
-
     UserMsgEntity leaveWord(UserMsgBo userMsgBo);
 
     Page<UserMsgEntity> findLeaveWord(UserMsgFilterBo userMsgFilterBo);
