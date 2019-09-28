@@ -22,7 +22,7 @@ public class UserBrowsingRecordDaoImpl implements UserBrowsingRecordDao {
     @Override
     public Page<InvitationUserInfoVo> findBrowsingRecords(UserBrowsingFilterVo filterVo) {
         StringBuilder sql = new StringBuilder();
-        sql.append("select SQL_CALC_FOUND_ROWS a.* ,i.we_chat,i.school,i.grade,i.last_login_time,i.avatar,i.gender , d.status from " +
+        sql.append("select SQL_CALC_FOUND_ROWS distinct t.invitation_id ,a.* ,i.we_chat,i.school,i.grade,i.last_login_time,i.avatar,i.gender , d.status from " +
                 "user_browsing_record t left join tenement_invitation_detail a on t.invitation_id = a.id left join " +
                 "user_like d on t.invitation_id = d.like_invitation_id left join " +
                 "user_info i on t.user_id = i.id " +
