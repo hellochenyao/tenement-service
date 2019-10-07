@@ -68,7 +68,7 @@ public class InvitationBrowsingController {
             UserLikeBo userLikeBo = userLikeService.findUserLikeByInvitationIdAndUserId(e.getId(),userId);
             BeanUtils.copyProperties(e, tenementInvitation);
             if(userLikeBo!=null){
-                tenementInvitation.setStatus(userLikeBo.getStatus());
+                tenementInvitation.setLikeStatus(userLikeBo.getStatus());
             }
             tenementInvitation.setCreateTime(DateUtils.getLocalDateTimeStr(e.getCreateTime()));
             tenementInvitation.setUpdateTime(DateUtils.getLocalDateTimeStr(e.getUpdateTime()));

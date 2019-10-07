@@ -1,5 +1,6 @@
 package com.katana.tenement.dao.app;
 
+import com.katana.tenement.dao.app.vo.tenementInvitation.InvitationLogFilterVo;
 import com.katana.tenement.dao.app.vo.tenementInvitation.InvitationUserInfoVo;
 import com.katana.tenement.dao.app.vo.tenementInvitation.TenementInvitationFilterVo;
 import com.katana.tenement.domain.entity.TenementInvitationEntity;
@@ -13,4 +14,5 @@ import java.util.List;
 public interface TenementInvitationDao {
     Page<TenementInvitationEntity> findInvitation(TenementInvitationFilterVo tenementInvitationFilterVo);
     InvitationUserInfoVo queryInvitationUserInfo(int id);
+    Page<InvitationUserInfoVo> findPublishLog(InvitationLogFilterVo filterVo);
 }

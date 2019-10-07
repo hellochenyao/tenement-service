@@ -29,6 +29,8 @@ public class ResponseTenementInvitationGet {
         @ApiModelProperty("发布人")
         private String publisher;
 
+        private Integer type;
+
         @ApiModelProperty("期望地点")
         private String location;
 
@@ -42,6 +44,7 @@ public class ResponseTenementInvitationGet {
 
         @ApiModelProperty("期望入住时间")
         private String desiredDate;
+        private Integer showPersonalInfo;
 
         @ApiModelProperty("中介免打扰 （0拒绝中介 1接收中介)")
         private Integer acceptedMedium;
@@ -97,5 +100,7 @@ public class ResponseTenementInvitationGet {
         private int leaveMsgNums;
 
         private Integer status;
+
+        private Integer likeStatus;
     }
 }

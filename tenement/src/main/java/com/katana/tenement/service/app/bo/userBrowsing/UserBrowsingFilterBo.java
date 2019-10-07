@@ -9,7 +9,7 @@ public class UserBrowsingFilterBo {
 
     private int invitationId;
 
-    private int status;
+    private Boolean isHaveResponse;
 
     private int pageNo;
 

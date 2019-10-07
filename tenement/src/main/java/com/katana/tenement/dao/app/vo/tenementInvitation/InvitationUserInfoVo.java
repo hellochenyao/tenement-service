@@ -28,9 +28,13 @@ public class InvitationUserInfoVo {
 
     private LocalDateTime desiredDate;
 
+    private Integer showPersonalInfo;
+
     private Integer acceptedMedium;
 
     private Integer roomRentType;
+
+    private String houseLayout;
 
     private Integer allowCallMe;
 
@@ -65,4 +69,6 @@ public class InvitationUserInfoVo {
     private int leaveMsgNums;
 
     private Integer status;
+
+    private Integer likeStatus;
 }

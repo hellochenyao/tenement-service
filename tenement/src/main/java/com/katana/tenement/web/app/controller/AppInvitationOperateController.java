@@ -1,17 +1,18 @@
 package com.katana.tenement.web.app.controller;
 
+import com.katana.tenement.dao.app.vo.tenementInvitation.InvitationUserInfoVo;
 import com.katana.tenement.dao.app.vo.userinfo.UserInfoVo;
 import com.katana.tenement.framework.constant.ConstantConfig;
+import com.katana.tenement.framework.dto.page.Page;
 import com.katana.tenement.framework.exception.BusinessException;
 import com.katana.tenement.framework.util.DateUtils;
 import com.katana.tenement.framework.util.FileUploadUtils;
 import com.katana.tenement.service.app.TenementInvitationService;
 import com.katana.tenement.service.app.UserInfoService;
+import com.katana.tenement.service.app.bo.tenementInvitation.InvitationPublishLogBo;
 import com.katana.tenement.service.app.bo.tenementInvitation.TenementInvitationBo;
 import com.katana.tenement.service.app.bo.tenementInvitation.TenementInvitationPutBo;
-import com.katana.tenement.web.app.api.invitation.RequestInvitationPut;
-import com.katana.tenement.web.app.api.invitation.RequestTenementInvitationPost;
-import com.katana.tenement.web.app.api.invitation.ResponseHousingResourcePost;
+import com.katana.tenement.web.app.api.invitation.*;
 import com.katana.tenement.web.main.utils.PathUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,6 +26,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @RestController
 @Api(tags = "App-用户贴子管理模块")
@@ -86,7 +90,9 @@ public class AppInvitationOperateController {
         TenementInvitationPutBo tenementInvitationPutBo = new TenementInvitationPutBo();
         tenementInvitationPutBo.setId(invitationId);
         BeanUtils.copyProperties(request,tenementInvitationPutBo);
-        tenementInvitationPutBo.setDesiredDate(DateUtils.getLocalDate(request.getDesiredDate(), "yyyy-MM-dd"));
+        if(request.getType()==0){
+            tenementInvitationPutBo.setDesiredDate(DateUtils.getLocalDate(request.getDesiredDate(), "yyyy-MM-dd"));
+        }
         tenementInvitationService.updateInvitation(tenementInvitationPutBo);
     }
 
@@ -96,4 +102,38 @@ public class AppInvitationOperateController {
         tenementInvitationService.deleteInvitation(invitationId);
     }
 
+    @ApiOperation("查找我发布过的帖子")
+    @RequestMapping(value = "/find/publish/log",method = RequestMethod.GET)
+    public ResponseTenementInvitationGet findPublishLog(RequestInvitationLogGet request, @PathVariable int userId){
+        InvitationPublishLogBo invitationBo = new InvitationPublishLogBo();
+        invitationBo.setUserId(userId);
+        BeanUtils.copyProperties(request,invitationBo);
+        Page<InvitationUserInfoVo> page = tenementInvitationService.findPublishLog(invitationBo);
+        List<ResponseTenementInvitationGet.TenementInvitation> list = new ArrayList<>();
+        page.getData().forEach(e->{
+            ResponseTenementInvitationGet.TenementInvitation tenementInvitation = new ResponseTenementInvitationGet.TenementInvitation();
+            tenementInvitation.setLastLoginTime(DateUtils.getLocalDateTimeStr(e.getLastLoginTime()));
+            tenementInvitation.setDesiredDate(DateUtils.getLocalDateTimeStr(e.getDesiredDate()));
+            tenementInvitation.setCreateTime(DateUtils.getLocalDateTimeStr(e.getCreateTime()));
+            tenementInvitation.setUpdateTime(DateUtils.getLocalDateTimeStr(e.getUpdateTime()));
+            BeanUtils.copyProperties(e,tenementInvitation);
+            list.add(tenementInvitation);
+        });
+        ResponseTenementInvitationGet res = new ResponseTenementInvitationGet();
+        res.setData(list);
+        res.setTotal(page.getTotal());
+        return res;
+    }
+
+    @ApiOperation("顶帖子")
+    @RequestMapping(value = "/refresh/invitation/{invitationId}",method = RequestMethod.PUT)
+    public void refreshInvitation(@PathVariable int invitationId){
+        tenementInvitationService.refreshInvitation(invitationId);
+    }
+
+    @ApiOperation("更新帖子状态 1上架 -1下架")
+    @RequestMapping(value = "/update/invitation/{status}/{invitationId}",method = RequestMethod.PUT)
+    public void updateInvitationStatus(@PathVariable int status,@PathVariable int invitationId){
+        tenementInvitationService.setInvitationStatus(invitationId,status);
+    }
 }

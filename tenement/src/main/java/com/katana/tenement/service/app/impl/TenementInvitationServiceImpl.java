@@ -3,15 +3,19 @@ package com.katana.tenement.service.app.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.katana.tenement.dao.app.TenementInvitationDao;
 import com.katana.tenement.dao.app.TenementInvitationRepo;
+import com.katana.tenement.dao.app.vo.tenementInvitation.InvitationLogFilterVo;
+import com.katana.tenement.dao.app.vo.tenementInvitation.InvitationUserInfoVo;
 import com.katana.tenement.dao.app.vo.tenementInvitation.TenementInvitationFilterVo;
 import com.katana.tenement.domain.entity.ConcernEntity;
 import com.katana.tenement.domain.entity.TenementInvitationEntity;
 import com.katana.tenement.domain.entity.UserMsgEntity;
 import com.katana.tenement.framework.dto.page.Page;
+import com.katana.tenement.framework.exception.BusinessException;
 import com.katana.tenement.framework.util.DateUtils;
 import com.katana.tenement.framework.websocket.WebSocketServer;
 import com.katana.tenement.service.app.ConcernService;
 import com.katana.tenement.service.app.TenementInvitationService;
+import com.katana.tenement.service.app.bo.tenementInvitation.InvitationPublishLogBo;
 import com.katana.tenement.service.app.bo.tenementInvitation.TenementInvitationBo;
 import com.katana.tenement.service.app.bo.tenementInvitation.TenementInvitationFilterBo;
 import com.katana.tenement.service.app.bo.tenementInvitation.TenementInvitationPutBo;
@@ -22,12 +26,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.lang.System.out;
-
 
 @Service
 public class TenementInvitationServiceImpl implements TenementInvitationService {
@@ -94,5 +98,43 @@ public class TenementInvitationServiceImpl implements TenementInvitationService 
     @Override
     public Page<UserMsgEntity> findUserMsgs(int invitationId) {
         return null;
+    }
+
+    @Override
+    public Page<InvitationUserInfoVo> findPublishLog(InvitationPublishLogBo logBo) {
+        InvitationLogFilterVo filterVo = new InvitationLogFilterVo();
+        BeanUtils.copyProperties(logBo,filterVo);
+        return tenementInvitationDao.findPublishLog(filterVo);
+    }
+
+    /**
+     * 顶贴
+     *
+     */
+    @Override
+    public void refreshInvitation(int invitationId) {
+        TenementInvitationEntity tenementInvitationEntity = tenementInvitationRepo.findById(invitationId).orElse(null);
+        if(tenementInvitationEntity!=null){
+            tenementInvitationEntity.setUpdateTime(LocalDateTime.now());
+        }else{
+            throw new BusinessException("INVITATION_NOT_FOUND","帖子不存在");
+        }
+        tenementInvitationRepo.save(tenementInvitationEntity);
+    }
+
+    /**
+     * 修改帖子状态
+     * @param invitationId
+     * @param status
+     */
+    @Override
+    public void setInvitationStatus(int invitationId, int status) {
+        TenementInvitationEntity tenementInvitationEntity = tenementInvitationRepo.findById(invitationId).orElse(null);
+        if(tenementInvitationEntity!=null){
+            tenementInvitationEntity.setStatus(status);
+        }else{
+            throw new BusinessException("INVITATION_NOT_FOUND","帖子不存在");
+        }
+        tenementInvitationRepo.save(tenementInvitationEntity);
     }
 }

@@ -36,11 +36,15 @@ public class ResponseInvitationGet {
     @ApiModelProperty("期望入住时间")
     private String desiredDate;
 
+    private Integer showPersonalInfo;
+
     @ApiModelProperty("中介免打扰 （0拒绝中介 1接收中介)")
     private Integer acceptedMedium;
 
     @ApiModelProperty("出租类型（0 整租 1 短租 2合租）")
     private Integer roomRentType;
+
+    private String houseLayout;
 
     @ApiModelProperty("是否可以直接打电话给我 (0不可以 1可以)")
     private Integer allowCallMe;
@@ -89,5 +93,8 @@ public class ResponseInvitationGet {
     @ApiModelProperty("留言数")
     private int leaveMsgNums;
 
+    @ApiModelProperty("帖子状态")
     private Integer status;
+
+    private Integer likeStatus;
 }

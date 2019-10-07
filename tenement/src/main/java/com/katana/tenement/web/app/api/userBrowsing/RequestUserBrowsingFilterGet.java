@@ -1,5 +1,6 @@
 package com.katana.tenement.web.app.api.userBrowsing;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
@@ -8,7 +9,8 @@ public class RequestUserBrowsingFilterGet {
 
     private int invitationId;
 
-    private int status;
+    @ApiModelProperty("是否只看回复过的")
+    private Boolean isHaveResponse;
 
     private int pageNo = 1;
 

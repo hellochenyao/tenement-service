@@ -26,9 +26,13 @@ public class InvitationUserInfoBo {
 
     private String desiredDate;
 
+    private Integer showPersonalInfo;
+
     private Integer acceptedMedium;
 
     private Integer roomRentType;
+
+    private String houseLayout;
 
     private Integer allowCallMe;
 
@@ -63,4 +67,6 @@ public class InvitationUserInfoBo {
     private int leaveMsgNums;
 
     private Integer status;
+
+    private Integer likeStatus;
 }
