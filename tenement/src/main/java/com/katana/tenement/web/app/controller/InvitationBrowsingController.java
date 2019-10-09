@@ -18,6 +18,7 @@ import com.katana.tenement.service.app.bo.tenementInvitation.TenementInvitationF
 import com.katana.tenement.service.app.bo.userBrowsing.UserBrowsingFilterBo;
 import com.katana.tenement.web.app.api.invitation.*;
 import com.katana.tenement.web.app.api.userBrowsing.RequestUserBrowsingFilterGet;
+import com.katana.tenement.web.app.api.userinfo.ResponseUserInfoGet;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import okhttp3.OkHttpClient;
@@ -253,6 +254,26 @@ public class InvitationBrowsingController {
             tenementInvitation.setLastLoginTime(DateUtils.getLocalDateTimeStr(e.getLastLoginTime()));
             list.add(tenementInvitation);
         });
+        response.setData(list);
+        response.setTotal(page.getTotal());
+        return response;
+    }
+
+    @ApiOperation(value = "查找用户收到的留言")
+    @RequestMapping(value = "/query/new/word",method =RequestMethod.GET )
+    public ResponseUserMsgInfoGet getUserMsgInfo(RequestUserMsgInfoGet request){
+        UserMsgResponseBo filterBo = new UserMsgResponseBo();
+        BeanUtils.copyProperties(request,filterBo);
+        Page<UserMsgEntity> page = invitationBrowsingService.findNewWord(filterBo);
+        List<ResponseUserMsgInfoGet.UserMsgInfo> list = new ArrayList<>();
+        page.getData().forEach(e->{
+            ResponseUserMsgInfoGet.UserMsgInfo userMsgInfo = new ResponseUserMsgInfoGet.UserMsgInfo();
+            userMsgInfo.setAnswerUserId(e.getAnswerUserId());
+            userMsgInfo.setAnswerUserNickName(e.getAnswerUserNickname());
+            userMsgInfo.setContent(e.getMsg());
+            list.add(userMsgInfo);
+        });
+        ResponseUserMsgInfoGet response = new ResponseUserMsgInfoGet();
         response.setData(list);
         response.setTotal(page.getTotal());
         return response;

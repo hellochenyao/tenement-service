@@ -8,7 +8,7 @@ import com.katana.tenement.service.app.bo.userCollection.UserCollectionFilterBo;
 
 public interface UserCollectionService {
 
-    void saveUserCollection(UserCollectionBo userCollectionBo);
+    Boolean saveUserCollection(UserCollectionBo userCollectionBo);
 
     UserCollectionEntity queryCollectStatus(int userId,int invitationId);
 

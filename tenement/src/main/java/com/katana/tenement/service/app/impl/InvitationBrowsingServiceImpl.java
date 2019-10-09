@@ -3,6 +3,7 @@ package com.katana.tenement.service.app.impl;
 import com.katana.tenement.dao.app.*;
 import com.katana.tenement.dao.app.vo.tenementInvitation.InvitationUserInfoVo;
 import com.katana.tenement.dao.app.vo.userBrowsing.UserBrowsingFilterVo;
+import com.katana.tenement.dao.app.vo.userMsg.UserMsgFilterVo;
 import com.katana.tenement.domain.entity.*;
 import com.katana.tenement.framework.common.RedisLock;
 import com.katana.tenement.framework.dto.page.Page;
@@ -41,6 +42,9 @@ public class InvitationBrowsingServiceImpl implements InvitationBrowsingService 
 
     @Autowired
     private UserBrowsingRecordDao userBrowsingRecordDao;
+
+    @Autowired
+    private UserMsgDao userMsgDao;
 
     @Override
     public void viewDetail(InvitationBrowsingBo invitationBrowsingBo) {
@@ -147,5 +151,12 @@ public class InvitationBrowsingServiceImpl implements InvitationBrowsingService 
         BeanUtils.copyProperties(filterBo,filterVo);
         Page<InvitationUserInfoVo> page =  userBrowsingRecordDao.findBrowsingRecords(filterVo);
         return page;
+    }
+
+    @Override
+    public Page<UserMsgEntity> findNewWord(UserMsgResponseBo filterBo) {
+        UserMsgFilterVo filterVo = new UserMsgFilterVo();
+        BeanUtils.copyProperties(filterBo,filterVo);
+        return userMsgDao.findNewWord(filterVo);
     }
 }

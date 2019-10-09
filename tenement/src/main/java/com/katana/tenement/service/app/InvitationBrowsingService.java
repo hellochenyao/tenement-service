@@ -32,4 +32,6 @@ public interface InvitationBrowsingService {
     void addBrowsingRecord(int userId,int invitationId);
 
     Page<InvitationUserInfoVo> findBrowsingInvitation(UserBrowsingFilterBo filterBo);
+
+    Page<UserMsgEntity> findNewWord(UserMsgResponseBo filterBo);
 }

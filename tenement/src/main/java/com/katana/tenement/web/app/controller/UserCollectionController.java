@@ -34,11 +34,14 @@ public class UserCollectionController {
 
     @ApiOperation("收藏帖子")
     @RequestMapping(value = "/save/{invitationId}",method = RequestMethod.POST)
-    public void collectInvitation(@PathVariable int userId,@PathVariable int invitationId){
+    public ResponseCollectionStatusGet collectInvitation(@PathVariable int userId,@PathVariable int invitationId){
         UserCollectionBo userCollectionBo = new UserCollectionBo();
         userCollectionBo.setUserId(userId);
         userCollectionBo.setInvitationId(invitationId);
-        userCollectionService.saveUserCollection(userCollectionBo);
+        ResponseCollectionStatusGet response = new ResponseCollectionStatusGet();
+        Boolean haveCollect = userCollectionService.saveUserCollection(userCollectionBo);
+        response.setCollectStatus(haveCollect);
+        return response;
     }
 
     @ApiOperation("查询该用户是否收藏帖子")

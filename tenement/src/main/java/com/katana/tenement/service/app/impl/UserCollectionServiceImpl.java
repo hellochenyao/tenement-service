@@ -25,11 +25,18 @@ public class UserCollectionServiceImpl implements UserCollectionService {
     private UserCollectionDao userCollectionDao;
 
     @Override
-    public void saveUserCollection(UserCollectionBo userCollectionBo) {
-        UserCollectionEntity userCollectionEntity = new UserCollectionEntity();
-        BeanUtils.copyProperties(userCollectionBo,userCollectionEntity);
-        userCollectionEntity.setCollectTime(LocalDateTime.now());
-        userCollectionRepo.save(userCollectionEntity);
+    public Boolean saveUserCollection(UserCollectionBo userCollectionBo) {
+        UserCollectionEntity userCollect = userCollectionRepo.findByUserIdAndInvitationId(userCollectionBo.getUserId(),userCollectionBo.getInvitationId());
+        if(userCollect==null){
+            userCollect = new UserCollectionEntity();
+            BeanUtils.copyProperties(userCollectionBo,userCollect);
+            userCollect.setCollectTime(LocalDateTime.now());
+            userCollectionRepo.save(userCollect);
+            return true;
+        }else{
+            userCollectionRepo.delete(userCollect);
+            return false;
+        }
     }
 
     @Override
