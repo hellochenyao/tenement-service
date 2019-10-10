@@ -27,7 +27,7 @@ public class UserMsgDaoImpl implements UserMsgDao {
         List<Object> params = new ArrayList<>();
         params.add(filterVo.getUserId());
         RowMapper<UserMsgEntity> rowMapper = new BeanPropertyRowMapper<>(UserMsgEntity.class);
-        sql.append(" limit ? , ? order by a.create_time desc ");
+        sql.append(" order by a.create_time desc limit ? , ? ");
         params.add((filterVo.getPageNo()-1)*filterVo.getPageSize());
         params.add(filterVo.getPageSize());
         List<UserMsgEntity> list = jdbcTemplate.query(sql.toString(),params.toArray(),rowMapper);
