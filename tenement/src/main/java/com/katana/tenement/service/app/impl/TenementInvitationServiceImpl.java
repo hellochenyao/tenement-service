@@ -137,4 +137,15 @@ public class TenementInvitationServiceImpl implements TenementInvitationService 
         }
         tenementInvitationRepo.save(tenementInvitationEntity);
     }
+
+    /**
+     * 查找帖子
+     * @param id
+     * @return
+     */
+    @Override
+    public TenementInvitationEntity findInvitationById(int id) {
+        TenementInvitationEntity tenementInvitationEntity = tenementInvitationRepo.findById(id).orElse(null);
+        return tenementInvitationEntity;
+    }
 }

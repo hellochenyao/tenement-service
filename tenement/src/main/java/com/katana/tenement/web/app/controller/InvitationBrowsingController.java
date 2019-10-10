@@ -271,6 +271,17 @@ public class InvitationBrowsingController {
             userMsgInfo.setAnswerUserId(e.getAnswerUserId());
             userMsgInfo.setAnswerUserNickName(e.getAnswerUserNickname());
             userMsgInfo.setContent(e.getMsg());
+            userMsgInfo.setUserId(e.getUserId());
+            UserInfoVo info = userInfoService.info(e.getUserId());
+            userMsgInfo.setUserAvatr(info.getAvatar());
+            userMsgInfo.setUserNickName(e.getNickname());
+            if(e.getPid()==0){
+                TenementInvitationEntity tenementInvitationEntity = tenementInvitationService.findInvitationById(e.getInvitationId());
+                userMsgInfo.setResponseContent(tenementInvitationEntity.getContent());
+            }else{
+                UserMsgEntity userMsgEntity = invitationBrowsingService.getResponseMsgContent(e.getPid());
+                userMsgInfo.setResponseContent(userMsgEntity.getMsg());
+            }
             list.add(userMsgInfo);
         });
         ResponseUserMsgInfoGet response = new ResponseUserMsgInfoGet();

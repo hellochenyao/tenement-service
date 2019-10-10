@@ -18,7 +18,7 @@ public class ResponseUserMsgInfoGet {
         private int userId;
 
         @ApiModelProperty("留言的用户名")
-        private int userNickName;
+        private String userNickName;
 
         @ApiModelProperty("留言的用户头像")
         private String userAvatr;

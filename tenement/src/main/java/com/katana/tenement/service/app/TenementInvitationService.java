@@ -28,4 +28,6 @@ public interface TenementInvitationService {
     void refreshInvitation(int invitationId);
 
     void setInvitationStatus(int invitationId,int status);
+
+    TenementInvitationEntity findInvitationById(int id);
 }
