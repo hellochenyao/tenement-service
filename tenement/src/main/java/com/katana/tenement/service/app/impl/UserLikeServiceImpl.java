@@ -1,7 +1,10 @@
 package com.katana.tenement.service.app.impl;
 
 import com.katana.tenement.dao.app.TenementInvitationRepo;
+import com.katana.tenement.dao.app.UserLikeDao;
 import com.katana.tenement.dao.app.UserLikeRepo;
+import com.katana.tenement.dao.app.vo.userLike.GiveUserLikeFilterVo;
+import com.katana.tenement.dao.app.vo.userLike.GiveUserLikeVo;
 import com.katana.tenement.domain.emuns.UserLikeEnum;
 import com.katana.tenement.domain.entity.TenementInvitationEntity;
 import com.katana.tenement.domain.entity.UserLikeEntity;
@@ -10,6 +13,8 @@ import com.katana.tenement.framework.common.RedisLock;
 import com.katana.tenement.framework.dto.page.Page;
 import com.katana.tenement.framework.exception.BusinessException;
 import com.katana.tenement.service.app.UserLikeService;
+import com.katana.tenement.service.app.bo.UserLike.GiveLikeUserBo;
+import com.katana.tenement.service.app.bo.UserLike.GiveUserLikeFilterBo;
 import com.katana.tenement.service.app.bo.UserLike.UserLikeBo;
 import com.katana.tenement.service.app.bo.UserLike.UserLikeFilterBo;
 import org.springframework.beans.BeanUtils;
@@ -20,9 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import static java.lang.System.in;
 import static java.lang.System.out;
 
 @Service
@@ -33,6 +36,8 @@ public class UserLikeServiceImpl implements UserLikeService {
 
     @Autowired
     TenementInvitationRepo tenementInvitationRepo;
+
+    private UserLikeDao userLikeDao;
 
     @Autowired
     RedisClient redisClient;
@@ -147,5 +152,12 @@ public class UserLikeServiceImpl implements UserLikeService {
         }finally {
             redisLock.unlock();
         }
+    }
+
+    @Override
+    public Page<GiveUserLikeVo> getUserGiveLike(GiveUserLikeFilterBo filterBo) {
+        GiveUserLikeFilterVo filterVo = new GiveUserLikeFilterVo();
+        BeanUtils.copyProperties(filterBo,filterVo);
+        return userLikeDao.findGiveLikeUser(filterVo);
     }
 }

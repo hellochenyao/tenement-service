@@ -1,7 +1,10 @@
 package com.katana.tenement.service.app;
 
+import com.katana.tenement.dao.app.vo.userLike.GiveUserLikeVo;
 import com.katana.tenement.domain.entity.UserLikeEntity;
 import com.katana.tenement.framework.dto.page.Page;
+import com.katana.tenement.service.app.bo.UserLike.GiveLikeUserBo;
+import com.katana.tenement.service.app.bo.UserLike.GiveUserLikeFilterBo;
 import com.katana.tenement.service.app.bo.UserLike.UserLikeBo;
 import com.katana.tenement.service.app.bo.UserLike.UserLikeFilterBo;
 
@@ -24,5 +27,7 @@ public interface UserLikeService {
     UserLikeBo findUserLikeByInvitationIdAndUserId(int invitationId,int userId);
 
     void updateInvitationSupportNums(int invitationId,int userId,int likeStatus);
+
+    Page<GiveUserLikeVo> getUserGiveLike(GiveUserLikeFilterBo filterBo);
 
 }
