@@ -1,11 +1,14 @@
 package com.katana.tenement.web.app.controller;
 
+import com.katana.tenement.dao.app.vo.userLike.GiveUserLikeVo;
 import com.katana.tenement.dao.app.vo.userinfo.UserInfoVo;
 import com.katana.tenement.domain.entity.UserInfoEntity;
 import com.katana.tenement.domain.entity.UserLikeEntity;
 import com.katana.tenement.framework.dto.page.Page;
+import com.katana.tenement.framework.util.DateUtils;
 import com.katana.tenement.service.app.UserInfoService;
 import com.katana.tenement.service.app.UserLikeService;
+import com.katana.tenement.service.app.bo.UserLike.GiveUserLikeFilterBo;
 import com.katana.tenement.service.app.bo.UserLike.UserLikeBo;
 import com.katana.tenement.service.app.bo.UserLike.UserLikeFilterBo;
 import com.katana.tenement.web.app.api.userLike.*;
@@ -94,5 +97,20 @@ public class UserLikeController {
 
     @ApiOperation("查找所有点赞我的帖子用户")
     @RequestMapping(value = "/find/like/invitation/users",method = RequestMethod.GET)
-    public ResponseGiveLikeUsersGet findGiveLikeUsers()
+    public ResponseGiveLikeUsersGet findGiveLikeUsers(RequestGiveLikeFilterGet request){
+        GiveUserLikeFilterBo filterBo = new GiveUserLikeFilterBo();
+        BeanUtils.copyProperties(request,filterBo);
+        Page<GiveUserLikeVo> page = userLikeService.getUserGiveLike(filterBo);
+        List<ResponseGiveLikeUsersGet.UserInfo> list = new ArrayList<>();
+        page.getData().forEach(e->{
+            ResponseGiveLikeUsersGet.UserInfo userInfo = new ResponseGiveLikeUsersGet.UserInfo();
+            BeanUtils.copyProperties(e,userInfo);
+            userInfo.setUpdateTime(DateUtils.getLocalDateTimeStr(e.getUpdateTime()));
+            list.add(userInfo);
+        });
+        ResponseGiveLikeUsersGet responseGiveLikeUsersGet = new ResponseGiveLikeUsersGet();
+        responseGiveLikeUsersGet.setData(list);
+        responseGiveLikeUsersGet.setTotal(page.getTotal());
+        return responseGiveLikeUsersGet;
+    }
 }
