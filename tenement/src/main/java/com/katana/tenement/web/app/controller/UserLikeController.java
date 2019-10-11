@@ -91,4 +91,8 @@ public class UserLikeController {
         BeanUtils.copyProperties(userLikeBo,response);
         return response;
     }
+
+    @ApiOperation("查找所有点赞我的帖子用户")
+    @RequestMapping(value = "/find/like/invitation/users",method = RequestMethod.GET)
+    public ResponseGiveLikeUsersGet findGiveLikeUsers()
 }
