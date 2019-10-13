@@ -184,6 +184,9 @@ public class InvitationBrowsingController {
     public ResponseUserMsgGet findMsg(@PathVariable("id") int msgId){
         ResponseUserMsgGet response = new ResponseUserMsgGet();
         UserMsgEntity userMsgEntity = invitationBrowsingService.getResponseMsgContent(msgId);
+        UserInfoVo user = userInfoService.info(userMsgEntity.getUserId());
+        response.setAvatar(user.getAvatar());
+        response.setGender(user.getGender());
         BeanUtils.copyProperties(userMsgEntity,response);
         response.setCreateTime(DateUtils.getLocalDateTimeStr(userMsgEntity.getCreateTime()));
         return response;
@@ -268,6 +271,7 @@ public class InvitationBrowsingController {
         List<ResponseUserMsgInfoGet.UserMsgInfo> list = new ArrayList<>();
         page.getData().forEach(e->{
             ResponseUserMsgInfoGet.UserMsgInfo userMsgInfo = new ResponseUserMsgInfoGet.UserMsgInfo();
+            BeanUtils.copyProperties(e,userMsgInfo);
             userMsgInfo.setAnswerUserId(e.getAnswerUserId());
             userMsgInfo.setAnswerUserNickName(e.getAnswerUserNickname());
             userMsgInfo.setContent(e.getMsg());
@@ -275,10 +279,13 @@ public class InvitationBrowsingController {
             UserInfoVo info = userInfoService.info(e.getUserId());
             userMsgInfo.setUserAvatr(info.getAvatar());
             userMsgInfo.setUserNickName(e.getNickname());
+            userMsgInfo.setCreateTime(DateUtils.getLocalDateTimeStr(e.getCreateTime()));
+            userMsgInfo.setGrade(info.getGender());
             if(e.getPid()==0){
                 TenementInvitationEntity tenementInvitationEntity = tenementInvitationService.findInvitationById(e.getInvitationId());
                 userMsgInfo.setResponseContent(tenementInvitationEntity.getContent());
             }else{
+                userMsgInfo.setId(e.getPid());
                 UserMsgEntity userMsgEntity = invitationBrowsingService.getResponseMsgContent(e.getPid());
                 userMsgInfo.setResponseContent(userMsgEntity.getMsg());
             }

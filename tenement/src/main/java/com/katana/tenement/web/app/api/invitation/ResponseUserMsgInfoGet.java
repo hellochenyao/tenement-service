@@ -14,6 +14,9 @@ public class ResponseUserMsgInfoGet {
     @Data
     public static class UserMsgInfo{
 
+        @ApiModelProperty("id")
+        private int id;
+
         @ApiModelProperty("留言的用户")
         private int userId;
 
@@ -34,5 +37,11 @@ public class ResponseUserMsgInfoGet {
 
         @ApiModelProperty("回答的用户名")
         private String answerUserNickName;
+
+        private String createTime;
+
+        private int grade;
+
+        private int invitationId;
     }
 }

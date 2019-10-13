@@ -31,4 +31,10 @@ public class ResponseUserMsgGet {
 
     //留言
     private String msg;
+
+    private String avatar;
+
+    //性别
+    private int gender;
+
 }
