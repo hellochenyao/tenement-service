@@ -1,5 +1,6 @@
 package com.katana.tenement.domain.entity;
 
+import com.katana.tenement.domain.emuns.ConcernType;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -13,9 +14,12 @@ public class ConcernEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private int userid;
+    private Integer userid;
 
-    private int toUserid;//关注用户的
+    private Integer toUserid;//关注用户的
+
+    @Enumerated(value = EnumType.STRING)
+    private ConcernType concernType;
 
     private LocalDateTime createTime;
 

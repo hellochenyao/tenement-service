@@ -36,8 +36,11 @@ public class TenementInvitationDaoImpl implements TenementInvitationDao {
             param.add(tenementInvitationFilterVo.getCity() + "%");
         }
         if (tenementInvitationFilterVo.getType() != null) {
-            sql.append(" and t.type = ? ");
-            param.add(tenementInvitationFilterVo.getType());
+            if(tenementInvitationFilterVo.getType()==0){
+                sql.append(" and t.type = 0 ");
+            }else{
+                sql.append(" and t.type = 1 or t.type = 2 ");
+            }
         }
 
         if(tenementInvitationFilterVo.getPublisherId()!=0){

@@ -4,6 +4,7 @@ import com.katana.tenement.dao.app.ConcernDao;
 import com.katana.tenement.dao.app.ConcernRepo;
 import com.katana.tenement.dao.app.vo.concern.ConcernFilterVo;
 import com.katana.tenement.dao.app.vo.userinfo.UserInfoVo;
+import com.katana.tenement.domain.emuns.ConcernType;
 import com.katana.tenement.domain.entity.ConcernEntity;
 import com.katana.tenement.domain.entity.NoticeEntity;
 import com.katana.tenement.domain.entity.UserInfoEntity;
@@ -40,8 +41,8 @@ public class ConcernServiceImpl implements ConcernService {
 
 
     @Override
-    public void saveUserConcern(int userid, int toUserid) {
-        ConcernEntity concern = concernRepo.findByUseridAndToUserid(userid,toUserid);
+    public void saveUserConcern(int userid, int toUserid,ConcernType concernType) {
+        ConcernEntity concern = concernRepo.findByUseridAndToUseridAndConcernType(userid,toUserid,concernType);
         if (concern != null) {
             throw new BusinessException("HAVE_CONCERN","您已关注过改用户，请勿重复关注！");
         }
@@ -50,6 +51,7 @@ public class ConcernServiceImpl implements ConcernService {
         concernEntity.setUpdateTime(LocalDateTime.now());
         concernEntity.setUserid(userid);
         concernEntity.setToUserid(toUserid);
+        concernEntity.setConcernType(concernType);
         concernRepo.save(concernEntity);
         NoticeBo noticeBo = new NoticeBo();
         UserInfoVo userInfo = userInfoService.info(userid);
@@ -60,8 +62,8 @@ public class ConcernServiceImpl implements ConcernService {
     }
 
     @Override
-    public void deletedUserConcern(int userid, int toUserid) {
-        ConcernEntity concernEntity = concernRepo.findByUseridAndToUserid(userid,toUserid);
+    public void deletedUserConcern(int userid, int toUserid,ConcernType concernType) {
+        ConcernEntity concernEntity = concernRepo.findByUseridAndToUseridAndConcernType(userid,toUserid,concernType);
         if(concernEntity!=null){
             concernRepo.delete(concernEntity);
             UserInfoVo userInfo = userInfoService.info(userid);
@@ -76,13 +78,13 @@ public class ConcernServiceImpl implements ConcernService {
     }
 
     @Override
-    public Integer queryConcernNums(int userid) {
-        return concernRepo.findConcernNums(userid);
+    public Integer queryConcernNums(int userid,ConcernType concernType) {
+        return concernRepo.findConcernNums(userid,concernType);
     }
 
     @Override
-    public Integer queryAdmiresNums(int toUserid) {
-        return concernRepo.findAdmiresNums(toUserid);
+    public Integer queryAdmiresNums(int toUserid,ConcernType concernType) {
+        return concernRepo.findAdmiresNums(toUserid,concernType);
     }
 
     @Override
@@ -94,8 +96,8 @@ public class ConcernServiceImpl implements ConcernService {
     }
 
     @Override
-    public Integer findIsConcern(int userid, int toUserid) {
-        ConcernEntity concernEntity = concernRepo.findByUseridAndToUserid(userid,toUserid);
+    public Integer findIsConcern(int userid, int toUserid,ConcernType concernType) {
+        ConcernEntity concernEntity = concernRepo.findByUseridAndToUseridAndConcernType(userid,toUserid,concernType);
         if(concernEntity!=null){
             return 1;
         }
@@ -103,7 +105,7 @@ public class ConcernServiceImpl implements ConcernService {
     }
 
     @Override
-    public List<ConcernEntity> findConcerns(int toUserid) {
-        return concernRepo.findByToUserid(toUserid);
+    public List<ConcernEntity> findConcerns(int toUserid,ConcernType concernType) {
+        return concernRepo.findByToUseridAndConcernType(toUserid,concernType);
     }
 }

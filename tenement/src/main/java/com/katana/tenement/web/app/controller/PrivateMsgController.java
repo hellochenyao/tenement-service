@@ -1,6 +1,7 @@
 package com.katana.tenement.web.app.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.katana.tenement.dao.app.PrivateMsgRepo;
 import com.katana.tenement.dao.app.vo.privateMsg.PrivateMsgUserReceiveFilterVo;
 import com.katana.tenement.dao.app.vo.userinfo.UserInfoVo;
 import com.katana.tenement.domain.emuns.MessageTypeEnum;
@@ -33,6 +34,7 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/app/tenement/{userId}")
@@ -45,6 +47,9 @@ public class PrivateMsgController {
 
     @Autowired
     private UserInfoService userInfoService;
+
+    @Autowired
+    private PrivateMsgRepo privateMsgRepo;
 
     @RequestMapping(value = "/find/msg",method = RequestMethod.GET)
     @ApiOperation("查找历史消息")
@@ -169,5 +174,16 @@ public class PrivateMsgController {
     @ApiOperation("删除所有消息")
     public void deleteMsg(@PathVariable("receiveUserid") int receiveUserid,@PathVariable("userId") int userId){
         privateMsgService.deleteAllMsg(receiveUserid,userId);
+    }
+
+    @PutMapping(value="/preivate/message/read")
+    @ApiOperation("将消息已读")
+    public void read(@PathVariable("userId") int userId,@RequestParam(required = true) int receiveUserId){
+        List<PrivateMsgEntity> msgEntities = privateMsgRepo.findByUseridAndReceiveUseridOrReceiveUseridAndUserid(userId,receiveUserId,userId,receiveUserId);
+        List<PrivateMsgEntity> msgs = msgEntities.stream().map(v->{
+            v.setIsRead(0);
+            return v;
+        }).collect(Collectors.toList());
+        privateMsgRepo.saveAll(msgs);
     }
 }

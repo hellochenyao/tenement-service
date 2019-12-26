@@ -1,5 +1,6 @@
 package com.katana.tenement.web.app.controller;
 
+import com.katana.tenement.domain.emuns.ConcernType;
 import com.katana.tenement.domain.entity.UserInfoEntity;
 import com.katana.tenement.framework.dto.page.Page;
 import com.katana.tenement.framework.util.DateUtils;
@@ -10,6 +11,7 @@ import com.katana.tenement.web.app.api.concern.ResponseConcernGet;
 import com.katana.tenement.web.app.api.concern.ResponseConcernUsersListGet;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,22 +27,28 @@ public class ConcernController {
     @Autowired
     private ConcernService concernService;
 
-    @ApiOperation(value = "关注用户或取关")
+    @ApiOperation(value = "关注用户和圈子或取关")
     @RequestMapping(value="/save/record/{type}/{toUserid}",method = RequestMethod.POST)
-    public void saveConcern(@PathVariable("toUserid") int toUserid, @PathVariable("userId") int userid,@PathVariable("type") int type){
+    public void saveConcern(@PathVariable("toUserid") int toUserid,
+                            @PathVariable("userId") int userid,
+                            @PathVariable("type") int type,
+                            @RequestParam ConcernType concernType
+                            ){
         if(type==0){
-            concernService.saveUserConcern(userid,toUserid);
+            concernService.saveUserConcern(userid,toUserid,concernType);
         }else{
-            concernService.deletedUserConcern(userid,toUserid);
+            concernService.deletedUserConcern(userid,toUserid,concernType);
         }
     }
 
     @ApiOperation(value = "查询某用户的关注数和粉丝数")
     @RequestMapping(value = "/find/nums",method = RequestMethod.GET)
-    public ResponseConcernGet queryNums(int toUserid){
+    public ResponseConcernGet queryNums(@ApiParam(value = "用户ID") @RequestParam int toUserid,
+                                        @RequestParam ConcernType concernType
+    ){
         ResponseConcernGet response = new ResponseConcernGet();
-        int concernNums = concernService.queryConcernNums(toUserid);
-        int admireNums = concernService.queryAdmiresNums(toUserid);
+        int concernNums = concernService.queryConcernNums(toUserid,concernType);
+        int admireNums = concernService.queryAdmiresNums(toUserid,concernType);
         response.setConcernNums(concernNums);
         response.setAdmireNums(admireNums);
         return response;
@@ -69,7 +77,10 @@ public class ConcernController {
 
     @ApiOperation(value="是否有关注改用户")
     @RequestMapping(value="find/concern/state",method = RequestMethod.GET)
-    public Integer findConcernState(int toUserid,@PathVariable("userId") int userId){
-        return concernService.findIsConcern(userId,toUserid);
+    public Integer findConcernState(@ApiParam(value = "关注用户ID") @RequestParam int toUserid,
+                                    @PathVariable("userId") int userId,
+                                    @RequestParam ConcernType concernType
+    ){
+        return concernService.findIsConcern(userId,toUserid,concernType);
     }
 }

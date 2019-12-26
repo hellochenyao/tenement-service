@@ -1,5 +1,6 @@
 package com.katana.tenement.web.app.api.userinfo;
 
+import com.katana.tenement.domain.emuns.TipOffsType;
 import lombok.Data;
 
 
@@ -11,7 +12,7 @@ public class RequestTipOffsPost {
 
 
     //举报类型
-    private int tipOffsId;
+    private TipOffsType tipOffsType;
 
     //对象
     private int targetId;
@@ -21,6 +22,10 @@ public class RequestTipOffsPost {
 
     //详细信息
     private String remark;
+
+    private int star;
+
+    private String image;
 
 
 }

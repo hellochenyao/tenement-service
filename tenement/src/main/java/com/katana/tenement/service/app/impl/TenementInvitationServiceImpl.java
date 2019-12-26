@@ -6,6 +6,7 @@ import com.katana.tenement.dao.app.TenementInvitationRepo;
 import com.katana.tenement.dao.app.vo.tenementInvitation.InvitationLogFilterVo;
 import com.katana.tenement.dao.app.vo.tenementInvitation.InvitationUserInfoVo;
 import com.katana.tenement.dao.app.vo.tenementInvitation.TenementInvitationFilterVo;
+import com.katana.tenement.domain.emuns.ConcernType;
 import com.katana.tenement.domain.entity.ConcernEntity;
 import com.katana.tenement.domain.entity.TenementInvitationEntity;
 import com.katana.tenement.domain.entity.UserMsgEntity;
@@ -74,7 +75,7 @@ public class TenementInvitationServiceImpl implements TenementInvitationService 
 //        Object resObj = JSONObject.parseObject(response);
 //        String city = ((JSONObject) resObj).getJSONObject("regeocode").getJSONObject("addressComponent").getString("city");
         TenementInvitationEntity responseInvitation = tenementInvitationRepo.save(tenementInvitationEntity);
-        List<ConcernEntity> concernEntityList = concernService.findConcerns(tenementInvitationBo.getUserId());
+        List<ConcernEntity> concernEntityList = concernService.findConcerns(tenementInvitationBo.getUserId(), ConcernType.USER);
         concernEntityList.forEach(e->{
             WebSocketServer.sendInfo(responseInvitation.getId(),"concernInvitation",e.getUserid(),-1);
         });

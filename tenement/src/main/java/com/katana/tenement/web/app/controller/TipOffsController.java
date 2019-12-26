@@ -23,12 +23,11 @@ public class TipOffsController {
 
 
     @ApiOperation(value = "举报  用户/帖子")
-    @RequestMapping(value = "/{type}", method = RequestMethod.POST)
-    public void tipOffUser(@PathVariable int type ,@RequestBody RequestTipOffsPost request) {
+    @RequestMapping(value = "/tip", method = RequestMethod.POST)
+    public void tipOffUser(@RequestBody RequestTipOffsPost request) {
 
         UserTipOffsBo userTipOffsBo = new UserTipOffsBo();
         BeanUtils.copyProperties(request,userTipOffsBo);
-        userTipOffsBo.setType(type);
         tipOffsService.tipOffs(userTipOffsBo);
     }
 

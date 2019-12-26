@@ -1,6 +1,8 @@
 package com.katana.tenement.domain.entity;
 
+import com.katana.tenement.domain.emuns.TipOffsType;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -30,7 +32,8 @@ public class TipOffsRecordEntity {
 
     //举报类型
     @Column
-    private int tipOffsId;
+    @Enumerated(EnumType.STRING)
+    private TipOffsType tipOffsType;
 
     //帖子id
     @Column
@@ -39,5 +42,16 @@ public class TipOffsRecordEntity {
     //详细信息
     @Column
     private String remark;
+
+    //图片
+    @Column
+    private String image;
+
+    private int star;
+
+    @CreationTimestamp
+    private LocalDateTime createTime;
+
+
 
 }
