@@ -3,6 +3,7 @@ package com.katana.tenement.web.app.controller;
 import com.katana.tenement.domain.emuns.ConcernType;
 import com.katana.tenement.domain.entity.UserInfoEntity;
 import com.katana.tenement.framework.dto.page.Page;
+import com.katana.tenement.framework.exception.BusinessException;
 import com.katana.tenement.framework.util.DateUtils;
 import com.katana.tenement.service.app.ConcernService;
 import com.katana.tenement.service.app.bo.concern.ConcernFilterBo;
@@ -35,6 +36,9 @@ public class ConcernController {
                             @RequestParam ConcernType concernType
                             ){
         if(type==0){
+            if(userid==toUserid&&ConcernType.USER.equals(concernType)){
+                throw new BusinessException("CONCERN_SELF","不能关注自己");
+            }
             concernService.saveUserConcern(userid,toUserid,concernType);
         }else{
             concernService.deletedUserConcern(userid,toUserid,concernType);
