@@ -1,6 +1,7 @@
 package com.katana.tenement.web.app.controller;
 
 import com.katana.tenement.dao.app.vo.userinfo.UserInfoVo;
+import com.katana.tenement.domain.entity.UserInfoEntity;
 import com.katana.tenement.service.app.UserInfoService;
 import com.katana.tenement.service.app.bo.userinfo.UserModifyBo;
 import com.katana.tenement.web.app.api.userinfo.*;
@@ -8,7 +9,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by mumu on 2019/4/10.
@@ -21,6 +27,22 @@ public class UserInfoController {
     @Autowired
     private UserInfoService userInfoService;
 
+    @ApiOperation(value = "查找好友")
+    @GetMapping(value = "/friend")
+    public ResponseInfoGet findFriend(@RequestParam String content,
+                                      @RequestParam(required = false,defaultValue = "1") int pageNo,
+                                      @RequestParam(required = false,defaultValue = "10") int pageSize){
+        Page<UserInfoEntity> page = userInfoService.findFriends(content,pageNo,pageSize);
+        List<ResponseInfoGet.UserInfo> list = page.stream().map(v->{
+            ResponseInfoGet.UserInfo userInfo = new ResponseInfoGet.UserInfo();
+            BeanUtils.copyProperties(v,userInfo);
+            return userInfo;
+        }).collect(Collectors.toList());
+        ResponseInfoGet responseInfoGet = new ResponseInfoGet();
+        responseInfoGet.setData(list);
+        responseInfoGet.setTotal((int)page.getTotalElements());
+        return responseInfoGet;
+    }
 
     @ApiOperation(value = "获取用户详细信息")
     @RequestMapping(value = "/info", method = RequestMethod.GET)

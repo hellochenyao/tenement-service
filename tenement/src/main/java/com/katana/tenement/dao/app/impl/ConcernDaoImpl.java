@@ -33,6 +33,8 @@ public class ConcernDaoImpl implements ConcernDao {
             sql.append("a.to_userid = t.id where a.to_userid = ? order by a.create_time desc");
             params.add("userid");
         }
+        sql.append("a.concern_type = ?");
+        params.add(concernFilterVo.getConcernType().toString());
         sql.append(" limit ?,? ");
         params.add((concernFilterVo.getPageNo()-1)*concernFilterVo.getPageSize());
         params.add(concernFilterVo.getPageSize());

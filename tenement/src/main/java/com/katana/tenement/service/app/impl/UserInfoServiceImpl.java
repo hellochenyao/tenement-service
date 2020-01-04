@@ -17,9 +17,13 @@ import com.katana.wx.weapp.user.response.SessionKeyResponse;
 import com.katana.wx.weapp.user.response.WxUserInfo;
 import com.katana.wx.weapp.user.response.WxUserPhone;
 import com.katana.wx.weapp.user.utils.WechatBizDataCrypt;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +34,7 @@ import java.util.List;
 /**
  * Created by mumu on 2019/3/27.
  */
+@Slf4j
 @Service
 @Transactional
 public class UserInfoServiceImpl implements UserInfoService {
@@ -51,6 +56,18 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Autowired
     private UserInfoDao userInfoDao;
+
+    @Override
+    public Page<UserInfoEntity> findFriends(String content,int pageNo,int pageSize) {
+        int id = -1;
+        try{
+            id = Integer.parseInt(content);
+        }catch (NumberFormatException e){
+            log.info(e.getMessage());
+        }
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return userInfoRepo.findByIdOrNickName(id,content,pageable);
+    }
 
     /**
      * 微信小程序 -- 登录
