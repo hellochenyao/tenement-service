@@ -34,6 +34,8 @@ public class ResponseInfoGet {
         @ApiModelProperty("电话")
         private String phone;
 
+        private String signature;
+
         @ApiModelProperty("微信账号")
         private String weChat;
 

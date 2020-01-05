@@ -27,13 +27,13 @@ public class ConcernDaoImpl implements ConcernDao {
         List<Object> params = new ArrayList<>();
         sql.append("select SQL_CALC_FOUND_ROWS t.* from concern a inner join user_info t on ");
         if(type==0){
-            sql.append("a.userid = t.id where a.userid = ? order by a.create_time desc");
+            sql.append("a.to_userid = t.id where a.userid = ? ");
             params.add(userid);
         }else if (type==1){
-            sql.append("a.to_userid = t.id where a.to_userid = ? order by a.create_time desc");
+            sql.append("a.userid = t.id where a.to_userid = ? ");
             params.add("userid");
         }
-        sql.append("a.concern_type = ?");
+        sql.append(" and a.concern_type = ? order by a.create_time desc");
         params.add(concernFilterVo.getConcernType().toString());
         sql.append(" limit ?,? ");
         params.add((concernFilterVo.getPageNo()-1)*concernFilterVo.getPageSize());

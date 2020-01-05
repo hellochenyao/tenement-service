@@ -42,17 +42,18 @@ public class ConcernServiceImpl implements ConcernService {
 
     @Override
     public void saveUserConcern(int userid, int toUserid,ConcernType concernType) {
-        ConcernEntity concern = concernRepo.findByUseridAndToUseridAndConcernType(userid,toUserid,concernType);
-        if (concern != null) {
+        ConcernEntity concernEntity = new ConcernEntity(userid,toUserid,concernType,LocalDateTime.now(),LocalDateTime.now());
+        try{
+            concernRepo.saveConcern(concernEntity.getId(),
+                    concernEntity.getUserid(),
+                    concernEntity.getToUserid(),
+                    concernEntity.getUpdateTime(),
+                    concernEntity.getConcernType().toString(),
+                    concernEntity.getCreateTime()
+            );
+        }catch (Exception e){
             throw new BusinessException("HAVE_CONCERN","您已关注过改用户，请勿重复关注！");
         }
-        ConcernEntity concernEntity = new ConcernEntity();
-        concernEntity.setCreateTime(LocalDateTime.now());
-        concernEntity.setUpdateTime(LocalDateTime.now());
-        concernEntity.setUserid(userid);
-        concernEntity.setToUserid(toUserid);
-        concernEntity.setConcernType(concernType);
-        concernRepo.save(concernEntity);
         NoticeBo noticeBo = new NoticeBo();
         UserInfoVo userInfo = userInfoService.info(userid);
         noticeBo.setContent(userInfo.getNickName()+"关注了你");
@@ -98,6 +99,10 @@ public class ConcernServiceImpl implements ConcernService {
     @Override
     public Integer findIsConcern(int userid, int toUserid,ConcernType concernType) {
         ConcernEntity concernEntity = concernRepo.findByUseridAndToUseridAndConcernType(userid,toUserid,concernType);
+        ConcernEntity fanEntity = concernRepo.findByUseridAndToUseridAndConcernType(toUserid,userid,concernType);
+        if(concernEntity!=null&&fanEntity!=null){
+            return 2;
+        }
         if(concernEntity!=null){
             return 1;
         }

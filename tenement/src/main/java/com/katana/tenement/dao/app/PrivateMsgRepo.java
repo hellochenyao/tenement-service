@@ -21,6 +21,6 @@ public interface PrivateMsgRepo extends CrudRepository<PrivateMsgEntity,Integer>
     @Query("select count(t) from PrivateMsgEntity t where t.userid = :userid and t.receiveUserid = :receiveUserid and t.isRead = :isRead")
     Integer findNoReadNums(@Param("userid") int userId,@Param("receiveUserid") int receiveUserid,@Param("isRead") int isRead);
 
-    List<PrivateMsgEntity> findByUseridAndReceiveUseridOrReceiveUseridAndUserid(@Param("userid") int userId,@Param("receiveUserid") int receiveUserid,@Param("receiveUserid") int receiveUseridTo,@Param("userid") int useridTo);
+    List<PrivateMsgEntity> findByReceiveUseridAndUseridAndIsRead(@Param("userid") int userId,@Param("receiveUserid") int receiveUserid,@Param("isRead") int isRead);
 
 }

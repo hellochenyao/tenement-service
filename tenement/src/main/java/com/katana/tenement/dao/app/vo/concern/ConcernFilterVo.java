@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class ConcernFilterVo {
-    private int userid;
+    private Integer userid;
     private int type;
     private ConcernType concernType;
     private int pageNo;

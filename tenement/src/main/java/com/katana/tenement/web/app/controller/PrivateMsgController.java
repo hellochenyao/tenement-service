@@ -179,7 +179,7 @@ public class PrivateMsgController {
     @PutMapping(value="/preivate/message/read")
     @ApiOperation("将消息已读")
     public void read(@PathVariable("userId") int userId,@RequestParam(required = true) int receiveUserId){
-        List<PrivateMsgEntity> msgEntities = privateMsgRepo.findByUseridAndReceiveUseridOrReceiveUseridAndUserid(userId,receiveUserId,userId,receiveUserId);
+        List<PrivateMsgEntity> msgEntities = privateMsgRepo.findByReceiveUseridAndUseridAndIsRead(userId,receiveUserId,-1);
         List<PrivateMsgEntity> msgs = msgEntities.stream().map(v->{
             v.setIsRead(0);
             return v;

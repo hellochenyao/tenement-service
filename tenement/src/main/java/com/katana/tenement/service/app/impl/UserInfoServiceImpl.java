@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,8 +66,8 @@ public class UserInfoServiceImpl implements UserInfoService {
         }catch (NumberFormatException e){
             log.info(e.getMessage());
         }
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return userInfoRepo.findByIdOrNickName(id,content,pageable);
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize,new Sort(Sort.Direction.ASC,"nickName"));
+        return userInfoRepo.findByIdLikeOrNickName(id,content,pageable);
     }
 
     /**

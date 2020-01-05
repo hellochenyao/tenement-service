@@ -60,11 +60,14 @@ public class ConcernController {
 
     @ApiOperation(value="某用户的关注列表或粉丝列表")
     @RequestMapping(value = "find/concern/list/{type}",method = RequestMethod.GET)
-    public ResponseConcernUsersListGet findConcernUsers(RequestConcernUsersFilterGet req,@PathVariable("type") int type,
+    public ResponseConcernUsersListGet findConcernUsers(RequestConcernUsersFilterGet req,
+                                                        @PathVariable("type") int type,
+                                                        @PathVariable("userId") int userId,
                                                         @RequestParam ConcernType concernType){
         ConcernFilterBo concernFilterBo = new ConcernFilterBo();
         BeanUtils.copyProperties(req,concernFilterBo);
         concernFilterBo.setType(type);
+        concernFilterBo.setUserid(userId);
         concernFilterBo.setConcernType(concernType);
         Page<UserInfoEntity> page = concernService.findConcernList(concernFilterBo);
         List<ResponseConcernUsersListGet.User> list = new ArrayList<>();

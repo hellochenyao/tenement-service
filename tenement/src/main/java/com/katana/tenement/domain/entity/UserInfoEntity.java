@@ -60,6 +60,8 @@ public class UserInfoEntity {
     @Column
     private String phone;
 
+    private String signature;
+
     //位置
     @Column
     private String location;

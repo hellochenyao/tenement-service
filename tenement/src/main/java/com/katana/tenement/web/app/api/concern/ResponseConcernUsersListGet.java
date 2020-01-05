@@ -26,6 +26,8 @@ public class ResponseConcernUsersListGet {
         @ApiModelProperty("性别")
         private int gender;
 
+        private String signature;
+
         private String lastLoginTime;
     }
 }
