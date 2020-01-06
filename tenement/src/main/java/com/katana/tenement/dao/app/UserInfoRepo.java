@@ -11,7 +11,7 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface UserInfoRepo extends CrudRepository<UserInfoEntity, Integer>, JpaSpecificationExecutor<UserInfoEntity> {
 
-    Page<UserInfoEntity> findByIdLikeOrNickName(int id, String content, Pageable pageable);
+    Page<UserInfoEntity> findByIdLikeOrNickNameLike(int id, String content, Pageable pageable);
 
     UserInfoEntity findById(int userId);
 

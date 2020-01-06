@@ -67,7 +67,7 @@ public class UserInfoServiceImpl implements UserInfoService {
             log.info(e.getMessage());
         }
         Pageable pageable = PageRequest.of(pageNo-1, pageSize,new Sort(Sort.Direction.ASC,"nickName"));
-        return userInfoRepo.findByIdLikeOrNickName(id,content,pageable);
+        return userInfoRepo.findByIdLikeOrNickNameLike(id,"%"+content+"%",pageable);
     }
 
     /**
