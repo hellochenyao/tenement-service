@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 
-/**
+/** 
  * Created by mumu on 2019/4/18.
  */
 public interface UserInfoRepo extends CrudRepository<UserInfoEntity, Integer>, JpaSpecificationExecutor<UserInfoEntity> {
