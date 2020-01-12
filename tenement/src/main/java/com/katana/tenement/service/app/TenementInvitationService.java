@@ -12,7 +12,7 @@ import com.katana.tenement.service.app.bo.tenementInvitation.TenementInvitationP
 public interface TenementInvitationService {
 
     //发布帖子
-    void create(TenementInvitationBo tenementInvitationBo);
+    TenementInvitationEntity create(TenementInvitationBo tenementInvitationBo);
 
     //查找帖子
     Page<TenementInvitationEntity> findInvitations(TenementInvitationFilterBo tenementInvitationFilterBo);

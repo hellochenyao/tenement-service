@@ -53,4 +53,6 @@ public class ResponseUserInfoGet {
 
     @ApiModelProperty("第一次登陆时间")
     private String createTime;
+
+    private String occupation;
 }

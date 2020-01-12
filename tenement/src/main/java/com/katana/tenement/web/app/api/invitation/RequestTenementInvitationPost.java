@@ -37,7 +37,7 @@ public class RequestTenementInvitationPost {
     private Integer allowCallMe;
 
     @ApiModelProperty("是否显示个人信息 （0显示 1不显示）")
-    private int showPersonalInfo;
+    private Integer showPersonalInfo;
 
     private String remark;
 

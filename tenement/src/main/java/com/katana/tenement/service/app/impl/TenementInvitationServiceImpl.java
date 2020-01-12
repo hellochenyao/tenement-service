@@ -63,7 +63,7 @@ public class TenementInvitationServiceImpl implements TenementInvitationService 
     }
 
     @Override
-    public void create(TenementInvitationBo tenementInvitationBo) {
+    public TenementInvitationEntity create(TenementInvitationBo tenementInvitationBo) {
         TenementInvitationEntity tenementInvitationEntity = new TenementInvitationEntity();
         BeanUtils.copyProperties(tenementInvitationBo, tenementInvitationEntity);
         tenementInvitationEntity.setStatus(1);
@@ -79,6 +79,7 @@ public class TenementInvitationServiceImpl implements TenementInvitationService 
         concernEntityList.forEach(e->{
             WebSocketServer.sendInfo(responseInvitation.getId(),"concernInvitation",e.getUserid(),-1);
         });
+        return responseInvitation;
     }
 
     @Override

@@ -32,4 +32,11 @@ public class UserInfoVo {
     private String lastLoginTime;
 
     private String createTime;
+
+    private String occupation;
+
+    private String weChat;
+
+    private String school;
+
 }

@@ -58,10 +58,11 @@ public class UserInfoController {
 
     @ApiOperation(value = "修改用户信息")
     @RequestMapping(value = "/modify", method = RequestMethod.PUT)
-    public void modify(@RequestBody RequestUserInfoPut request) {
+    public void modify(@RequestBody RequestUserInfoPut request,@PathVariable int userId) {
 
         UserModifyBo userModifyBo = new UserModifyBo();
         BeanUtils.copyProperties(request,userModifyBo);
+        userModifyBo.setUserId(userId);
         userInfoService.modify(userModifyBo);
     }
 

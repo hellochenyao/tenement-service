@@ -11,7 +11,7 @@ public class RequestUserInfoPut {
 
 
     //性别
-    private int gender;
+    private Integer gender;
 
     //微信账号
     private String weChat;
@@ -26,6 +26,10 @@ public class RequestUserInfoPut {
     private String eduBack;
 
     //学生/工作
-    private int isWorker;
+    private Integer isWorker;
+
+    private String nickName;
+
+    private String phone;
 
 }

@@ -18,6 +18,7 @@ import com.katana.wx.weapp.user.response.WxUserInfo;
 import com.katana.wx.weapp.user.response.WxUserPhone;
 import com.katana.wx.weapp.user.utils.WechatBizDataCrypt;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -227,18 +228,38 @@ public class UserInfoServiceImpl implements UserInfoService {
 
         JwtStorageBo jwtStorageBo = (JwtStorageBo) request.getAttribute("userInfo");
 
-        UserInfoEntity userInfo = userInfoRepo.findById(jwtStorageBo.getUserId());
+        UserInfoEntity userInfo = userInfoRepo.findById(userModifyBo.getUserId()).orElse(null);
 
         if (userInfo == null) {
             throw new BusinessException("NO_SUCH_USER","该用户不存在！");
         }
-        userInfo.setGender(userModifyBo.getGender());
-        userInfo.setSchool(userModifyBo.getSchool());
-        userInfo.setGrade(userModifyBo.getGrade());
-        userInfo.setEduBack(userModifyBo.getEduBack());
-        userInfo.setOccupation(userModifyBo.getOccupation());
-        userInfo.setIsWorker(userModifyBo.getIsWorker());
-
+        if(StringUtils.isNotBlank(userModifyBo.getNickName())){
+            userInfo.setNickName(userModifyBo.getNickName());
+        }
+        if(StringUtils.isNotBlank(userModifyBo.getWeChat())){
+            userInfo.setWeChat(userModifyBo.getWeChat());
+        }
+        if(userModifyBo.getGender() != null){
+            userInfo.setGender(userModifyBo.getGender());
+        }
+        if(StringUtils.isNotBlank(userModifyBo.getSchool())){
+            userInfo.setSchool(userModifyBo.getSchool());
+        }
+        if(userModifyBo.getGrade() != null){
+            userInfo.setGrade(userModifyBo.getGrade());
+        }
+        if(StringUtils.isNotBlank(userModifyBo.getEduBack())){
+            userInfo.setEduBack(userModifyBo.getEduBack());
+        }
+        if(StringUtils.isNotBlank(userModifyBo.getOccupation())){
+            userInfo.setOccupation(userModifyBo.getOccupation());
+        }
+        if(userModifyBo.getIsWorker() != null){
+            userInfo.setIsWorker(userModifyBo.getIsWorker());
+        }
+        if(userModifyBo.getPhone() != null){
+            userInfo.setPhone(userModifyBo.getPhone());
+        }
         userInfoRepo.save(userInfo);
 
     }

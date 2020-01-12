@@ -2,6 +2,7 @@ package com.katana.tenement.web.app.controller;
 
 import com.katana.tenement.dao.app.vo.tenementInvitation.InvitationUserInfoVo;
 import com.katana.tenement.dao.app.vo.userinfo.UserInfoVo;
+import com.katana.tenement.domain.entity.TenementInvitationEntity;
 import com.katana.tenement.framework.constant.ConstantConfig;
 import com.katana.tenement.framework.dto.page.Page;
 import com.katana.tenement.framework.exception.BusinessException;
@@ -44,7 +45,7 @@ public class AppInvitationOperateController {
 
     @ApiOperation("根据类型发布帖子")
     @RequestMapping(value = "/item/{type}/publish", method = RequestMethod.POST)
-    public void publishInvitation(@RequestBody RequestTenementInvitationPost request, @PathVariable("userId") Integer userId,@PathVariable("type") Integer type) {
+    public TenementInvitationEntity publishInvitation(@RequestBody RequestTenementInvitationPost request, @PathVariable("userId") Integer userId, @PathVariable("type") Integer type) {
         if (StringUtils.isEmpty(request.getTitle())) {
             throw new BusinessException("PARAM_ERROR", "帖子标题不能为空");
         }
@@ -65,7 +66,7 @@ public class AppInvitationOperateController {
             tenementInvitationBo.setDesiredDate(DateUtils.getLocalDate(request.getDesiredDate(), "yyyy-MM-dd"));
         }
         tenementInvitationBo.setType(type);
-        tenementInvitationService.create(tenementInvitationBo);
+        return tenementInvitationService.create(tenementInvitationBo);
     }
 
 

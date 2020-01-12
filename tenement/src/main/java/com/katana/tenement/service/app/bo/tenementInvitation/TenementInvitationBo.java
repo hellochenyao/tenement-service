@@ -59,7 +59,7 @@ public class TenementInvitationBo {
     private Integer allowCallMe;
 
     //是否显示个人信息
-    private int showPersonalInfo;
+    private Integer showPersonalInfo;
 
     private String remark;
 

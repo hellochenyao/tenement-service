@@ -11,7 +11,7 @@ public class UserModifyBo {
 
 
     //性别
-    private int gender;
+    private Integer gender;
 
     //微信账号
     private String weChat;
@@ -26,9 +26,15 @@ public class UserModifyBo {
     private String eduBack;
 
     //学生/工作
-    private int isWorker;
+    private Integer isWorker;
 
     //入学年级
-    private int grade;
+    private Integer grade;
+
+    private String nickName;
+
+    private Integer userId;
+
+    private String phone;
 
 }
