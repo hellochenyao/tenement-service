@@ -88,7 +88,10 @@ public class UserInfoServiceImpl implements UserInfoService {
         if (userInfo == null) {
             //首次登陆
             List<UserInfoEntity > lastUser = userInfoDao.findRecords();
-            Integer userId = lastUser.get(0).getId()+1;
+            Integer userId = 10000;
+            if(lastUser.size()>0){
+                userId = lastUser.get(0).getId()+1;
+            }
             userInfo = new UserInfoEntity();
             userInfo.setId(userId);
             userInfo.setOpenId(sessionKey.getOpenid());
